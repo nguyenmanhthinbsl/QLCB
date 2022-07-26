@@ -1,7 +1,6 @@
 #pragma once
 #include "entity.h"
 #include "mylib.h"
-#include "sub_function.h"
 #include "function.h"
 #include "entity.h"
 #include <stdlib.h>

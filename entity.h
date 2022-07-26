@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "date.h"
+#include "sub_function.h"
 #include "mylib.h"
 using namespace std;
 
