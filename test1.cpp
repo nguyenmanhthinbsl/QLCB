@@ -1,10 +1,10 @@
 #include <iostream>
-#include <conio.h>
 using namespace std;
 
 int main()
 {
-	string a = "\0";
-	cout<<a.size();
+	for(int i=0;i<=255;i++){
+		cout<<i<<" "<<char(i)<<endl;
+	}
 	return 0;
 }

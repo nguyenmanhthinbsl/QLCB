@@ -11,7 +11,7 @@ const int MAX_LENGTH_SHMB = 15;
 const int MAX_LENGTH_LOAIMB = 40;
 const int MAX_LENGTH_MACB = 15;
 const int MAX_LENGTH_CMND = 12;
-const int MAX_LENGTH_HO = 60;
+const int MAX_LENGTH_HO = 30;
 const int MAX_LENGTH_TEN = 20;
 
 using namespace std;
@@ -125,6 +125,10 @@ void Add_CB_to_List(PTR_ChuyenBay &First, ChuyenBay cb){
     }
 }
 
+bool listCBEmpty(PTR_ChuyenBay list){
+	return list==NULL;
+}
+
 bool listMBEmpty(List_MayBay list){
     return list.soluong==0;
 }
@@ -139,4 +143,42 @@ void Add_MB_to_List(List_MayBay &list,MayBay mb){
     list.soluong++;
 }
 
+int checkFull_CB(PTR_ChuyenBay First){
+	for(int i=1;i<=First->data.soVe;i++){
+		if(First->data.danhsachVe[i]=="0") return 0;
+	}
+	First->data.trangthai = HETVE;
+	return 1;
+}
 
+void checkHoanTat(PTR_ChuyenBay &p, List_MayBay &dsmb){
+	if(p->data.trangthai==CONVE||p->data.trangthai==HETVE){
+		if(TGQK(p->data.ngaykhoihanh)==true){
+			p->data.trangthai = HOANTAT;
+			dsmb.nodes[timkiem_MB(dsmb, p->data.sohieu_maybay)]->sochuyendabay++;
+		}
+	}
+}
+
+void check_HoanTat_All(PTR_ChuyenBay &First, List_MayBay &list){
+	PTR_ChuyenBay a;
+	for(a = First; a!=NULL;a=a->next){
+		checkHoanTat(a, list);
+	}
+}
+
+int sovechuaban(ChuyenBay a){
+	int count = 0;
+	for(int i=1;i<=a.soVe;i++)
+		if(a.danhsachVe[i]=="0") count++;
+	return count;
+}
+
+PTR_HK timkiem_HK(PTR_HK root, char* CMND){
+	PTR_HK nodeRun = root;
+	while(nodeRun!=NULL&&ChangeCharToNum(CMND)!=ChangeCharToNum(nodeRun->info.CMND)){
+		if(ChangeCharToNum(CMND)>ChangeCharToNum(nodeRun->info.CMND)) nodeRun = nodeRun->right;
+		else nodeRun=nodeRun->left;
+	}
+	return nodeRun;
+}

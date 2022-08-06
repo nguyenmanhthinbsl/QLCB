@@ -7,7 +7,7 @@
 using namespace std;
 
 #define width 156
-#define height 42
+#define height 44
 #define width_title 110
 #define height_title 6
 
@@ -23,9 +23,6 @@ using namespace std;
 #define Fork_Top_2_Line 203
 
 
-
-
-
 void Frame_Drawing(int top, int bot, int left, int right);
 void Clear_Frame_Main();
 void Clear_Frame_Input();
@@ -34,6 +31,7 @@ void Draw_A_Vertical_Line(int x, int y_top, int x_bot);
 void Draw_Button(string name_button, int x, int y, int color);
 void Draw_Name_Project();
 void Draw_GoodBye();
+void Show_Message(string type, string mess);
 
 /*Function Deployment*/
 void Frame_Drawing(int top, int bot, int left, int right) {
@@ -122,7 +120,7 @@ void Draw_GoodBye(){
 
 void Clear_Frame_Main(){
     ShowCur(false);
-    for(int i=1;i<=103;i++){
+    for(int i=1;i<=109;i++){
         for(int j=7; j<=37;j++){
             gotoxy(i,j);
             cout<<" ";
@@ -138,4 +136,19 @@ void Clear_Frame_Input(){
             cout<<" ";
         }
     }
+}
+
+void Show_Message(string type, string mess){
+	ShowCur(false);
+	int x = 110 + ((156-110-mess.size())/2);
+	int y = 35;
+	if(type=="ERROR") Draw_Button(mess, x, y, 4);
+	else Draw_Button(mess, 125, 35, 3);
+	Sleep(3000);
+	for(int i=x; i<=x+mess.size()+1;i++){
+		for(int j=y;j<=y+4;j++){
+			gotoxy(i,j);
+			cout<<" ";
+		}
+	}
 }

@@ -10,6 +10,13 @@ int SelectLV2_2();
 int Insert_MB(List_MayBay &list, MayBay* maybay);
 void show_List_MB(List_MayBay list);
 void Deletedequi(PTR_HK &root_HK);
+
+int dem_CB_ChuaBay(PTR_ChuyenBay list);
+
+bool hanhkhach_chuabay(PTR_ChuyenBay list_CB, char* CMND);
+PTR_ChuyenBay check_maCB_chuabay(PTR_ChuyenBay list_CB, char *maCB);
+
+void show_List_CB_chuabay(PTR_ChuyenBay l, int page_now, int count_CB);
 int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK);
 int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK);
 void show_List_CB(PTR_ChuyenBay First_CB);
@@ -17,8 +24,96 @@ void Init_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void Handle_Main();
 void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 
+int dem_CB_ChuaBay(PTR_ChuyenBay list){
+	int count = 0;
+	PTR_ChuyenBay p;
+	for(p=list;p!=NULL;p=p->next) if(p->data.trangthai!=HOANTAT&&p->data.trangthai!=HUYCHUYEN) count++;
+	return count;
+}
+
+void show_List_CB_chuabay(PTR_ChuyenBay l, int page_now, int count_CB){
+	int MAXLIST = 10;
+	ChuyenBay *temp = new ChuyenBay[count_CB];
+	int dem = 0;
+	PTR_ChuyenBay p;
+	int count_page = (count_CB%MAXLIST==0)? (count_CB/MAXLIST) : (count_CB/MAXLIST+1);
+	for(p=l;p!=NULL;p=p->next) if(p->data.trangthai!=HOANTAT)
+		temp[dem++] = p->data;
+	if(count_CB==0){
+		gotoxy(30,11);
+		cout<<"KHONG CO CHUYEN BAY NAO CHUA HOAN THANH";
+		ShowCur(false);
+		delete[] temp;
+		return;
+	}
+	Clear_Frame_Main();
+	gotoxy(2,11);
+	cout<<"+------------------+---------------------+---------------------+-----------------------+--------------+";
+	gotoxy(2,12);
+	cout<<"|  MA CHUYEN BAY   |   NGAY GIO BAY      |   SO HIEU MAY BAY   |   SAN BAY DEN         | SO GHE TRONG |";
+	if(page_now!=count_page)
+		for(int i=(page_now-1)*MAXLIST; i<(page_now)*MAXLIST;i++){
+			gotoxy(2,(13+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"+------------------+---------------------+---------------------+-----------------------+--------------+";
+			gotoxy(2,(14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<temp[i].ma_chuyenbay;
+			gotoxy(21, (14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<temp[i].ngaykhoihanh.gio<<":"<<temp[i].ngaykhoihanh.phut<<" "<<temp[i].ngaykhoihanh.ngay<<"/"<<temp[i].ngaykhoihanh.thang<<"/"<<temp[i].ngaykhoihanh.nam;
+			gotoxy(43,(14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<temp[i].sohieu_maybay;
+			gotoxy(65, (14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<temp[i].sanbayden;
+			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<sovechuaban(temp[i]);
+			gotoxy(104, (14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|";
+		}
+	else
+		for(int i=(page_now-1)*MAXLIST;i<count_CB;i++){
+			gotoxy(2,(13+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"+------------------+---------------------+---------------------+-----------------------+--------------+";
+			gotoxy(2,(14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<temp[i].ma_chuyenbay;
+			gotoxy(21, (14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<temp[i].ngaykhoihanh.gio<<":"<<temp[i].ngaykhoihanh.phut<<" "<<temp[i].ngaykhoihanh.ngay<<"/"<<temp[i].ngaykhoihanh.thang<<"/"<<temp[i].ngaykhoihanh.nam;
+			gotoxy(43,(14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<temp[i].sohieu_maybay;
+			gotoxy(65, (14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<temp[i].sanbayden;
+			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|"<<sovechuaban(temp[i]);
+			gotoxy(104, (14+i*2)-(page_now-1)*MAXLIST*2);
+			cout<<"|";
+		}
+	gotoxy(2,wherey()+1);
+	cout<<"+------------------+---------------------+---------------------+-----------------------+--------------+";
+	delete[] temp;
+}
+
+bool hanhkhach_chuabay(PTR_ChuyenBay list_CB, char* CMND){
+	PTR_ChuyenBay p;
+	for(p=list_CB;p!=NULL;p=p->next)
+		if(p->data.trangthai!=HUYCHUYEN && p->data.trangthai!=HOANTAT)
+			for(int i=1;i<=p->data.soVe;i++){
+				if(p->data.danhsachVe[i]==CMND) return true;
+			}
+	return false;
+}
+
+PTR_ChuyenBay check_maCB_chuabay(PTR_ChuyenBay list_CB, char *maCB){
+	PTR_ChuyenBay p;
+	for(p=list_CB; p!=NULL;p=p->next)
+		if(p->data.trangthai!=HUYCHUYEN&&p->data.trangthai!=HOANTAT) if(strcmp(maCB, p->data.ma_chuyenbay)==0) return p;
+	return NULL; 
+}
+
 int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     Clear_Frame_Main();
+    bool is_add_HK = true;
+    int page_now = 1;
+    int count_CB = dem_CB_ChuaBay(First_CB);
+    int count_page = (count_CB%10==0)? (count_CB/10) : (count_CB/10+1);
+    show_List_CB_chuabay(First_CB,page_now, count_CB);
     gotoxy(115, 6);
     cout<<"Ma CB: ";
     gotoxy(115, 8);
@@ -31,6 +126,296 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     cout<<"Phai: ";
     gotoxy(115,16);
     cout<<"Ma Ghe: ";
+    char key = 0;
+    char maCB[MAX_LENGTH_MACB+1] = "";
+    char CMND[MAX_LENGTH_CMND+1] = "";
+    char ho[MAX_LENGTH_HO+1] = "";
+    char ten[MAX_LENGTH_TEN+1] = "";
+    char phai[4]= "";
+    int maghe = 0;
+    gotoxy(125,16);
+    cout<<maghe;
+    ShowCur(true);
+    gotoxy(125,6);
+    int run = 1;
+    while(run){
+    	int y = wherey();
+    	if(key==ESC) break;
+		ShowCur(true);
+    	switch(y){
+    		case 6:{
+    			nhapChuoi(maCB, MAX_LENGTH_MACB, key, NO_SPACE);
+    			if(key==ESC){
+    				run = 0;
+    				key = 0;
+    				break;
+				}else{
+					if(key==UP){
+						key = 0;
+						continue;
+					}
+					if(key==DOWN||key==ENTER||key==TAB) {
+						if(check_maCB_chuabay(First_CB, maCB)==NULL){
+    						Show_Message("ERROR","KHONG TON TAI CHUYEN BAY");
+    						gotoxy(125+strlen(maCB),6);
+						}else gotoxy(125+strlen(CMND), 8);
+						key = 0;
+						continue;
+					}
+					if(key==PAGEUP){
+						key = 0;
+						if(page_now==1) continue;
+						show_List_CB_chuabay(First_CB,--page_now, count_CB);
+						gotoxy(125+strlen(maCB),6);
+						continue;
+					}
+					if(key==PAGEDOWN){
+						key = 0;
+						if(page_now==count_page) continue;
+						show_List_CB_chuabay(First_CB, ++page_now, count_CB);
+						gotoxy(125+strlen(maCB),6);
+						continue;
+					}
+				}
+				break;
+			}
+			case 8:{
+    			nhapChuoi(CMND, MAX_LENGTH_CMND, key, ONLY_NUMBER);
+    			if(key==ESC){
+    				run = 0;
+    				key = 0;
+    				break;
+				}else{
+					if(key==UP){
+						key = 0;
+						gotoxy(125+strlen(maCB), 6);
+						continue;
+					}
+					if(key==DOWN||key==ENTER||key==TAB) {
+						PTR_HK hk = timkiem_HK(root_HK, CMND);
+						if(hk!=NULL){
+							is_add_HK = false;
+							gotoxy(125,10); cout<<"                              ";
+							gotoxy(125,10); cout<<hk->info.ho;
+							strcpy(ho, hk->info.ho);
+							gotoxy(125,12); cout<<"                    ";
+							gotoxy(125,12); cout<<hk->info.ten;
+							strcpy(ten, hk->info.ten);
+							gotoxy(125,14); cout<<"   ";
+							gotoxy(125,14);
+							if(hk->info.phai==1){
+								cout<<"NAM";
+								strcpy(phai,"NAM");
+							}
+							else{
+								cout<<"NU";
+								strcpy(phai,"NU");
+							}
+						}else{
+							is_add_HK = true;
+						}
+						if(!is_add_HK) gotoxy(125+intToString(maghe).size(), 16);
+						else gotoxy(125+strlen(ho), 10);
+						key = 0;
+						continue;
+					}
+					if(key==PAGEUP){
+						key = 0;
+						if(page_now==1) continue;
+						show_List_CB_chuabay(First_CB,--page_now, count_CB);
+						gotoxy(125+strlen(CMND),8);
+						continue;
+					}
+					if(key==PAGEDOWN){
+						key = 0;
+						if(page_now==count_page) continue;
+						show_List_CB_chuabay(First_CB, ++page_now, count_CB);
+						gotoxy(125+strlen(CMND),8);
+						continue;
+					}
+				}
+				break;
+			}
+			case 10:{
+    			nhapChuoi(ho, MAX_LENGTH_HO, key, ONLY_WORD);
+    			if(key==ESC){
+    				run = 0;
+    				key = 0;
+    				break;
+				}else{
+					if(key==UP){
+						key = 0;
+						gotoxy(125+strlen(CMND), 8);
+						continue;
+					}
+					if(key==DOWN||key==ENTER||key==TAB) {
+						key = 0;
+						gotoxy(125+strlen(ten), 12);
+						continue;
+					}
+					if(key==PAGEUP){
+						key = 0;
+						if(page_now==1) continue;
+						show_List_CB_chuabay(First_CB,--page_now, count_CB);
+						gotoxy(125+strlen(ho),10);
+						continue;
+					}
+					if(key==PAGEDOWN){
+						key = 0;
+						if(page_now==count_page) continue;
+						show_List_CB_chuabay(First_CB, ++page_now, count_CB);
+						gotoxy(125+strlen(ho),10);
+						continue;
+					}
+				}
+				break;
+			}
+			case 12:{
+    			nhapChuoi(ten, MAX_LENGTH_TEN, key, ONLY_WORD);
+    			if(key==ESC){
+    				run = 0;
+    				key = 0;
+    				break;
+				}else{
+					if(key==UP){
+						key = 0;
+						gotoxy(125+strlen(ho), 10);
+						continue;
+					}
+					if(key==DOWN||key==ENTER||key==TAB) {
+						key = 0;
+						gotoxy(125+strlen(phai), 14);
+						continue;
+					}
+					if(key==PAGEUP){
+						key = 0;
+						if(page_now==1) continue;
+						show_List_CB_chuabay(First_CB,--page_now, count_CB);
+						gotoxy(125+strlen(ten),12);
+						continue;
+					}
+					if(key==PAGEDOWN){
+						key = 0;
+						if(page_now==count_page) continue;
+						show_List_CB_chuabay(First_CB, ++page_now, count_CB);
+						gotoxy(125+strlen(ten),12);
+						continue;
+					}
+				}
+				break;
+			}
+			case 14:{
+    			nhapChuoi(phai, 3, key, NO_SPACE);
+    			if(key==ESC){
+    				run = 0;
+    				key = 0;
+					break;
+				}else{
+					if(key==UP){
+						key = 0;
+						gotoxy(125+strlen(ten), 12);
+						continue;
+					}
+					if(key==DOWN||key==ENTER||key==TAB) {
+						key = 0;
+						gotoxy(125+intToString(maghe).size(), 16);
+						continue;
+					}
+					if(key==PAGEUP){
+						key = 0;
+						if(page_now==1) continue;
+						show_List_CB_chuabay(First_CB,--page_now, count_CB);
+						gotoxy(125+strlen(phai),14);
+						continue;
+					}
+					if(key==PAGEDOWN){
+						key = 0;
+						if(page_now==count_page) continue;
+						show_List_CB_chuabay(First_CB, ++page_now, count_CB);
+						gotoxy(125+strlen(phai),14);
+						continue;
+					}
+				}
+				break;
+			}
+			case 16:{
+    			nhapSo(maghe, key);
+    			if(key==ESC){
+    				run = 0;
+    				key = 0;
+					break;
+				}
+    			if(key==ENTER){
+    				if(is_add_HK){
+    					if(strlen(CMND)!=9&&strlen(CMND)!=12){
+    						Show_Message("ERROR","CMND KHONG HOP LE");
+    						gotoxy(125+strlen(CMND), 8);
+    						key = 0;
+    						continue;
+   						}
+   						LTrim(ho);
+    					RTrim(ho);
+    					LTrim(ten);
+    					RTrim(ten);
+    					if(strlen(ho)==0){
+    						Show_Message("ERROR","HO KHONG HOP LE");
+    						gotoxy(125+strlen(ho), 10);
+    						key = 0;
+    						continue;
+						}
+						if(strlen(ten)==0){
+							Show_Message("ERROR", "TEN KHONG HOP LE");
+							gotoxy(125+strlen(ten), 12);
+    						key = 0;
+    						continue;
+						}
+						if(strcmp(phai,"NAM")!=0&&strcmp(phai,"NU")!=0){
+							Show_Message("ERROR", "PHAI KHONG HOP LE");
+							gotoxy(125+strlen(phai), 14);
+    						key = 0;
+    						continue;
+						} 
+					}else{
+						if(!hanhkhach_chuabay(First_CB, CMND)){
+								
+						}
+						else{
+							
+						}
+					}
+				}else{
+					if(key==UP){
+						if(!is_add_HK) gotoxy(125+strlen(CMND), 8);
+						else gotoxy(125+strlen(phai), 14);
+						key = 0;
+						continue;
+					}
+					if(key==DOWN) {
+						key = 0;
+						continue;
+					}
+					if(key==PAGEUP){
+						key = 0;
+						if(page_now==1) continue;
+						show_List_CB_chuabay(First_CB,--page_now, count_CB);
+						gotoxy(125+intToString(maghe).size(), 16);
+						continue;
+					}
+					if(key==PAGEDOWN){
+						key = 0;
+						if(page_now==count_page) continue;
+						show_List_CB_chuabay(First_CB, ++page_now, count_CB);
+						gotoxy(125+intToString(maghe).size(), 16);
+						continue;
+					}
+				}
+				break;
+			}
+		}
+    	
+	}
+	
+	Clear_Frame_Main();
 }
 
 int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){

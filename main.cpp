@@ -10,94 +10,84 @@ int main()
 
     Init_Main(list_MB, First_CB, root_HK);
     
-    show_List_MB(list_MB);
-    getch();
-    
-    show_List_CB(First_CB);
-    getch();
-    
-    
-    After_Main(list_MB, First_CB , root_HK);
-    return 0;
-    // ShowCur(true);
-    // gotoxy(156,0);
-    // getch();
-//    int key_1;
-//    int exit = 0;
-//    while (1)
-//    {
-//        Clear_Frame_Main();
-//        key_1 = SelectLV1();
-//        exit = 0;
-//        switch (key_1)
-//        {
-//        case -1:
-//        {
-//        	After_Main(list_MB, First_CB, root_HK);
-//            return 0;
-//        }
-//        case 0:
-//        {
-//            int key_2_1;
-//            while (exit == 0)
-//            {
-//                key_2_1 = SelectLV2_1();
-//                switch (key_2_1)
-//                {
-//                case -1:
-//                {
-//                    exit = 1;
-//                    break;
-//                }
-//                case 0:
-//                {
-//                    cout << "HELLO";
-//                    getch();
-//                    break;
-//                }
-//                case 1:
-//                {
-//                    cout << "HELLo";
-//                    getch();
-//                    break;
-//                }
-//                }
-//            }
-//        case 1:
-//        {
-//            int key_2_2;
-//            while (exit == 0)
-//            {
-//                key_2_2 = SelectLV2_2();
-//                switch (key_2_2)
-//                {
-//                case -1:
-//                {
-//                    exit = 1;
-//                    break;
-//                }
-//                case 0:
-//                {
+    check_HoanTat_All(First_CB, list_MB);
+
+    int key_1;
+    int exit = 0;
+    while (1)
+    {
+        Clear_Frame_Main();
+        key_1 = SelectLV1();
+        exit = 0;
+        switch (key_1)
+        {
+        case -1:
+        {
+        	After_Main(list_MB, First_CB, root_HK);
+            return 0;
+        }
+        case 0:
+        {
+            int key_2_1;
+            while (exit == 0)
+            {
+                key_2_1 = SelectLV2_1();
+                switch (key_2_1)
+                {
+                case -1:
+                {
+                    exit = 1;
+                    break;
+                }
+                case 0:
+                {
+                    cout << "HELLO";
+                    getch();
+                    break;
+                }
+                case 1:
+                {
+                    cout << "HELLo";
+                    getch();
+                    break;
+                }
+                }
+            }
+        case 1:
+        {
+            int key_2_2;
+            while (exit == 0)
+            {
+                key_2_2 = SelectLV2_2();
+                switch (key_2_2)
+                {
+                case -1:
+                {
+                    exit = 1;
+                    break;
+                }
+                case 0:
+                {
 //                    ShowDSChuyenBay(list_CB);
-//                    break;
-//                }
-//                case 1:
-//                {
-//                    DatVe(First_CB, root_HK);
+                    break;
+                }
+                case 1:
+                {
+                    DatVe(First_CB, root_HK);
 //                    getch();
-//                    break;
-//                }
-//                case 2:
-//                {
-//                   HuyVe(First_CB, root_HK);
-//                   getch();
-//                    break;
-//                }
-//                }
-//            }
-//        }
-//        }
-//        }
-//    }
+                    break;
+                }
+                case 2:
+                {
+                   HuyVe(First_CB, root_HK);
+                   getch();
+                    break;
+                }
+                }
+            }
+        }
+        }
+        }
+    }
 }
 

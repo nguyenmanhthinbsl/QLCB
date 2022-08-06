@@ -26,6 +26,10 @@
 #define CONVE 1
 #define HETVE 2
 #define HOANTAT 3
+#define ONLY_NUMBER 1
+#define ONLY_WORD 2
+#define ALL_CHAR 3
+#define NO_SPACE 4
 
 void gotoxy(short x, short y);
 int wherex(void);

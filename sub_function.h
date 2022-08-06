@@ -14,12 +14,12 @@ unsigned long long ChangeCharToNum (char str[]);
 int toInt(string s);
 int toInt(char* s);
 string intToString(int i);
-int nhapSo();
-char* nhapChuoi(int length);
-char* LTrim(char* S);
-char* RTrim(char* S);
-char* Trim(char* S);
-char* Upper(char* S);
+void nhapSo(int &number, char &key);
+void nhapChuoi(char* str,int length, char &key, int type);
+void LTrim(char* S);
+void RTrim(char* S);
+void Trim(char* S);
+void Upper(char* S);
 
 /*Function Deployment*/
 
@@ -56,12 +56,25 @@ string intToString(int i){
 	return ss.str();
 }
 
-int nhapSo(){
-    int ret = 0;
+void nhapSo(int &number, char &key){
+    int ret = number;
     int x,y;
     char input;
-    char str[100] = {'\0'};
+    char str[6] = {'\0'};
+    strcpy(str, intToString(number).c_str());
     while((input = getch())!=ENTER){
+    	if(input==TAB||input==ESC){
+    		key=input;
+    		return;
+		}
+    	if(input==is_press_f ){
+    		input = getch();
+    		continue;
+		}
+		if(input==is_press_arrow_key){
+			key = getch();
+			return;
+		}
         if((input<'0'||input>'9')&&input!=BACKSPACE) continue;
         if(input==BACKSPACE){
             if(strlen(str)==0) continue;
@@ -75,59 +88,78 @@ int nhapSo(){
                 str[strlen(str)-1] = '\0';
             }
         }else{
+        	if(strlen(str)==5) continue;
             cout<<input;
             ret = ret*10+(int)input-'0';
             str[strlen(str)] = input;
         }
     }
-    cout<<"\n";
-    return ret;
+    key = ENTER;
 }
 
-char* nhapChuoi(int lenght){
-    char ret[lenght+1] = {'\0'};
-    cout<<strlen(ret);
+void nhapChuoi(char* str, int length, char &key, int type){
     char input;
     int x,y;
     while((input = getch())!=ENTER){
+    	if(input==TAB||input==ESC){
+    		key=input;
+    		return;
+		}
+    	if(input==is_press_f ){
+    		input = getch();
+    		continue;
+		}
+		if(input==is_press_arrow_key){
+			key = getch();
+			return;
+		}
         if(input==BACKSPACE){
-            if(strlen(ret)==0) continue;
+            if(strlen(str)==0) continue;
             else{
                 x = wherex();
                 y = wherey();
                 gotoxy(x-1,y);
                 cout<<" ";
                 gotoxy(x-1,y);
-                ret[strlen(ret)-1] = '\0';
+                str[strlen(str)-1] = '\0';
             }
         }else{
-            if(strlen(ret)==lenght) continue;
+            if(strlen(str)==length) continue;
+            if(type==ONLY_NUMBER){
+            	if(input<'0'||input>'9') continue;
+			}else if(type==ONLY_WORD){
+				if((input<'A'||input>'Z')&&(input<'a'||input>'z')&&input!=' ') continue;
+			}else if(type==NO_SPACE){
+				if(input==' ') continue;
+			}
+			if(input==' '){
+				if(str[strlen(str)-1]==' ') continue;
+			}
+			if(input>='a'&&input<='z')
+            input = input - 32;
             cout<<input;
-            ret[strlen(ret)] = input;
+            str[strlen(str)] = input;
         }
     }
-    cout<<endl;
-    return ret;
+    key = ENTER;
 }
 
-char* LTrim(char* S){
+void LTrim(char* S){
     while(S[0]==' '&&strlen(S)!=0){
         for(int i=1;i<strlen(S);i++){
             S[i-1] = S[i];
         }
         S[strlen(S)-1] = '\0';
     }
-    return S;
 }
 
-char* RTrim(char* S){
+void RTrim(char* S){
     while(S[strlen(S)-1]==' '&&strlen(S)!=0){
         S[strlen(S)-1] = '\0';
     }
-    return S;
 }
 
-char* Trim(char* S){
+void Trim(char* S){
     for(int i=0;i<strlen(S);i++)
         if(S[i]==' '){
             for(int j=i+1;j<strlen(S);j++)
@@ -137,10 +169,10 @@ char* Trim(char* S){
         }
 }
 
-char* Upper(char* S){
+void Upper(char* S){
     for(int i=0;i<strlen(S);i++)
         if(S[i]>='a'&&S[i]<='z')
             S[i] = S[i] - 32;
-    return S;
 }
+
 
