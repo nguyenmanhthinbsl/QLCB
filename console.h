@@ -144,7 +144,7 @@ void Show_Message(string type, string mess){
 	int y = 35;
 	if(type=="ERROR") Draw_Button(mess, x, y, 4);
 	else Draw_Button(mess, 125, 35, 3);
-	Sleep(3000);
+	Sleep(1500);
 	for(int i=x; i<=x+mess.size()+1;i++){
 		for(int j=y;j<=y+4;j++){
 			gotoxy(i,j);

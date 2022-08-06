@@ -101,6 +101,7 @@ void ShowCur(bool CursorVisibility) {
 
 void resizeConsole(int width, int height) {
     HWND console = GetConsoleWindow();
+    SetWindowPos( console, 0, 55, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER );
     RECT r;
     GetWindowRect(console, &r);
     MoveWindow(console, r.left, r.top, width, height, TRUE);

@@ -15,7 +15,6 @@ int dem_CB_ChuaBay(PTR_ChuyenBay list);
 
 bool hanhkhach_chuabay(PTR_ChuyenBay list_CB, char* CMND);
 PTR_ChuyenBay check_maCB_chuabay(PTR_ChuyenBay list_CB, char *maCB);
-
 void show_List_CB_chuabay(PTR_ChuyenBay l, int page_now, int count_CB);
 int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK);
 int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK);
@@ -138,6 +137,7 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     ShowCur(true);
     gotoxy(125,6);
     int run = 1;
+    PTR_ChuyenBay p;
     while(run){
     	int y = wherey();
     	if(key==ESC) break;
@@ -155,7 +155,8 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						continue;
 					}
 					if(key==DOWN||key==ENTER||key==TAB) {
-						if(check_maCB_chuabay(First_CB, maCB)==NULL){
+						p = check_maCB_chuabay(First_CB, maCB);
+						if(p==NULL){
     						Show_Message("ERROR","KHONG TON TAI CHUYEN BAY");
     						gotoxy(125+strlen(maCB),6);
 						}else gotoxy(125+strlen(CMND), 8);
@@ -192,6 +193,12 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						continue;
 					}
 					if(key==DOWN||key==ENTER||key==TAB) {
+						if(strlen(CMND)!=9&&strlen(CMND)!=12){
+    						Show_Message("ERROR","CMND KHONG HOP LE");
+    						gotoxy(125+strlen(CMND), 8);
+    						key = 0;
+    						continue;
+   						}
 						PTR_HK hk = timkiem_HK(root_HK, CMND);
 						if(hk!=NULL){
 							is_add_HK = false;
@@ -214,7 +221,7 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						}else{
 							is_add_HK = true;
 						}
-						if(!is_add_HK) gotoxy(125+intToString(maghe).size(), 16);
+						if(!is_add_HK)gotoxy(125+intToString(maghe).size(), 16);
 						else gotoxy(125+strlen(ho), 10);
 						key = 0;
 						continue;
@@ -249,8 +256,13 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						continue;
 					}
 					if(key==DOWN||key==ENTER||key==TAB) {
+						LTrim(ho);
+    					RTrim(ho);
+    					if(strlen(ho)==0){
+    						Show_Message("ERROR","HO KHONG HOP LE");
+    						gotoxy(125+strlen(ho), 10);
+						}else gotoxy(125+strlen(ten), 12);
 						key = 0;
-						gotoxy(125+strlen(ten), 12);
 						continue;
 					}
 					if(key==PAGEUP){
@@ -283,8 +295,13 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						continue;
 					}
 					if(key==DOWN||key==ENTER||key==TAB) {
+						LTrim(ten);
+    					RTrim(ten);
+						if(strlen(ten)==0){
+							Show_Message("ERROR", "TEN KHONG HOP LE");
+							gotoxy(125+strlen(ten), 12);
+						}else gotoxy(125+strlen(phai), 14);
 						key = 0;
-						gotoxy(125+strlen(phai), 14);
 						continue;
 					}
 					if(key==PAGEUP){
@@ -317,8 +334,11 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						continue;
 					}
 					if(key==DOWN||key==ENTER||key==TAB) {
+						if(strcmp(phai,"NAM")!=0&&strcmp(phai,"NU")!=0){
+							Show_Message("ERROR", "PHAI KHONG HOP LE");
+							gotoxy(125+strlen(phai), 14);
+						} else gotoxy(125+intToString(maghe).size(), 16);
 						key = 0;
-						gotoxy(125+intToString(maghe).size(), 16);
 						continue;
 					}
 					if(key==PAGEUP){
@@ -346,43 +366,29 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 					break;
 				}
     			if(key==ENTER){
-    				if(is_add_HK){
-    					if(strlen(CMND)!=9&&strlen(CMND)!=12){
-    						Show_Message("ERROR","CMND KHONG HOP LE");
-    						gotoxy(125+strlen(CMND), 8);
-    						key = 0;
-    						continue;
-   						}
-   						LTrim(ho);
-    					RTrim(ho);
-    					LTrim(ten);
-    					RTrim(ten);
-    					if(strlen(ho)==0){
-    						Show_Message("ERROR","HO KHONG HOP LE");
-    						gotoxy(125+strlen(ho), 10);
-    						key = 0;
-    						continue;
-						}
-						if(strlen(ten)==0){
-							Show_Message("ERROR", "TEN KHONG HOP LE");
-							gotoxy(125+strlen(ten), 12);
-    						key = 0;
-    						continue;
-						}
-						if(strcmp(phai,"NAM")!=0&&strcmp(phai,"NU")!=0){
-							Show_Message("ERROR", "PHAI KHONG HOP LE");
-							gotoxy(125+strlen(phai), 14);
-    						key = 0;
-    						continue;
-						} 
-					}else{
-						if(!hanhkhach_chuabay(First_CB, CMND)){
-								
-						}
-						else{
-							
-						}
+    				if(maghe<=0||maghe>p->data.soVe){
+						Show_Message("ERROR", "MA GHE KHONG DUNG");
+						gotoxy(125+intToString(maghe).size(), 16);
+						key = 0;
+						continue;
 					}
+    				if(p->data.danhsachVe[maghe]!="0"){
+    					Show_Message("ERROR", "GHE DA CO NGUOI DANG KI");
+						gotoxy(125+intToString(maghe).size(), 16);
+						key = 0;
+						continue;
+					}
+					
+//    				if(is_add_HK){
+//    					
+//					}else{
+//						if(!hanhkhach_chuabay(First_CB, CMND)){
+//								
+//						}
+//						else{
+//							
+//						}
+//					}
 				}else{
 					if(key==UP){
 						if(!is_add_HK) gotoxy(125+strlen(CMND), 8);

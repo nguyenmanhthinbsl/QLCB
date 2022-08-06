@@ -14,7 +14,7 @@ unsigned long long ChangeCharToNum (char str[]);
 int toInt(string s);
 int toInt(char* s);
 string intToString(int i);
-void nhapSo(int &number, char &key);
+void nhapSo(int &number,int x, int y, char &key);
 void nhapChuoi(char* str,int length, char &key, int type);
 void LTrim(char* S);
 void RTrim(char* S);
@@ -57,11 +57,10 @@ string intToString(int i){
 }
 
 void nhapSo(int &number, char &key){
-    int ret = number;
     int x,y;
     char input;
     char str[6] = {'\0'};
-    strcpy(str, intToString(number).c_str());
+	strcpy(str, intToString(number).c_str());
     while((input = getch())!=ENTER){
     	if(input==TAB||input==ESC){
     		key=input;
@@ -84,13 +83,14 @@ void nhapSo(int &number, char &key){
                 gotoxy(x-1,y);
                 cout<<" ";
                 gotoxy(x-1,y);
-                ret/=10;
+                number/=10;
                 str[strlen(str)-1] = '\0';
             }
         }else{
+        	if(str[0]=='0')continue;
         	if(strlen(str)==5) continue;
             cout<<input;
-            ret = ret*10+(int)input-'0';
+            number = number*10+(int)input-'0';
             str[strlen(str)] = input;
         }
     }

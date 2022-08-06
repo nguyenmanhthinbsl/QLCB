@@ -1,10 +1,13 @@
 #include <iostream>
-#include <conio.h>
+#include <sstream>
 using namespace std;
 
 int main()
 {
-	string a = "\0";
-	cout<<a.size();
+	int i = 123555;
+	stringstream ss;
+	ss<<i;	
+	string str = ss.str();
+	cout<<str;
 	return 0;
 }
