@@ -131,9 +131,8 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     char ho[MAX_LENGTH_HO+1] = "";
     char ten[MAX_LENGTH_TEN+1] = "";
     char phai[4]= "";
-    int maghe = 0;
-    gotoxy(125,16);
-    cout<<maghe;
+    int maghe;
+    char maghe_str[6]="";
     ShowCur(true);
     gotoxy(125,6);
     int run = 1;
@@ -221,7 +220,7 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						}else{
 							is_add_HK = true;
 						}
-						if(!is_add_HK)gotoxy(125+intToString(maghe).size(), 16);
+						if(!is_add_HK)gotoxy(125+strlen(maghe_str), 16);
 						else gotoxy(125+strlen(ho), 10);
 						key = 0;
 						continue;
@@ -337,7 +336,7 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						if(strcmp(phai,"NAM")!=0&&strcmp(phai,"NU")!=0){
 							Show_Message("ERROR", "PHAI KHONG HOP LE");
 							gotoxy(125+strlen(phai), 14);
-						} else gotoxy(125+intToString(maghe).size(), 16);
+						} else gotoxy(125+strlen(maghe_str), 16);
 						key = 0;
 						continue;
 					}
@@ -359,22 +358,23 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 				break;
 			}
 			case 16:{
-    			nhapSo(maghe, key);
+    			nhapChuoi(maghe_str, 5, key, ONLY_NUMBER);
     			if(key==ESC){
     				run = 0;
     				key = 0;
 					break;
 				}
     			if(key==ENTER){
+    				maghe = toInt(maghe_str);
     				if(maghe<=0||maghe>p->data.soVe){
 						Show_Message("ERROR", "MA GHE KHONG DUNG");
-						gotoxy(125+intToString(maghe).size(), 16);
+						gotoxy(125+strlen(maghe_str), 16);
 						key = 0;
 						continue;
 					}
     				if(p->data.danhsachVe[maghe]!="0"){
     					Show_Message("ERROR", "GHE DA CO NGUOI DANG KI");
-						gotoxy(125+intToString(maghe).size(), 16);
+						gotoxy(125+strlen(maghe_str), 16);
 						key = 0;
 						continue;
 					}

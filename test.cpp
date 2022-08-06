@@ -1,13 +1,12 @@
 #include <iostream>
-#include <sstream>
+#include "sub_function.h"
 using namespace std;
 
 int main()
 {
-	int i = 123555;
-	stringstream ss;
-	ss<<i;	
-	string str = ss.str();
-	cout<<str;
+	char key = 0;
+	int a=0;
+	nhapSo(a,key);
+	cout<<a;
 	return 0;
 }
