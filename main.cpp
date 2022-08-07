@@ -68,7 +68,7 @@ int main()
                 }
                 case 0:
                 {
-//                    ShowDSChuyenBay(list_CB);
+                    XuLyDSChuyenBay(First_CB);
                     break;
                 }
                 case 1:
