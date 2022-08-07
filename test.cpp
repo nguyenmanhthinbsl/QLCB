@@ -4,9 +4,8 @@ using namespace std;
 
 int main()
 {
-	char key = 0;
-	int a=0;
-	nhapSo(a,key);
-	cout<<a;
+	cout<<"             AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+	Sleep(1000);
+	cout << string(50, '\n');
 	return 0;
 }

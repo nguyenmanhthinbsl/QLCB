@@ -14,8 +14,8 @@ struct Day_time{
 	int phut;
 };
 
-void print_TG(Day_time a){
-	cout<<a.gio<<":"<<a.phut<<" "<<a.ngay<<"/"<<a.thang<<"/"<<a.nam<<endl;
+void printDay_time(Day_time a){
+	cout<<a.ngay<<"/"<<a.thang<<"/"<<a.nam<<" "<<a.gio<<":"<<a.phut;
 }
 
 bool LeapYear(int year)

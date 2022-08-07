@@ -32,6 +32,7 @@ void Draw_Button(string name_button, int x, int y, int color);
 void Draw_Name_Project();
 void Draw_GoodBye();
 void Show_Message(string type, string mess);
+int form_confirm(string mess);
 
 /*Function Deployment*/
 void Frame_Drawing(int top, int bot, int left, int right) {
@@ -120,21 +121,20 @@ void Draw_GoodBye(){
 
 void Clear_Frame_Main(){
     ShowCur(false);
-    for(int i=1;i<=109;i++){
-        for(int j=7; j<=37;j++){
-            gotoxy(i,j);
-            cout<<" ";
-        }
+    for(int j=7; j<=37;j++){
+        gotoxy(1,j);
+        cout<<"                                                                                                             ";
     }
 }
 
 void Clear_Frame_Input(){
     ShowCur(false);
+    for(int j=1; j<=37;j++){
+        gotoxy(111,j);
+        cout<<"                                             ";
+    }
     for(int i=111;i<=155;i++){
-        for(int j=1; j<=37;j++){
-            gotoxy(i,j);
-            cout<<" ";
-        }
+        
     }
 }
 
@@ -145,10 +145,61 @@ void Show_Message(string type, string mess){
 	if(type=="ERROR") Draw_Button(mess, x, y, 4);
 	else Draw_Button(mess, 125, 35, 3);
 	Sleep(1500);
-	for(int i=x; i<=x+mess.size()+1;i++){
+	for(int i=x; i<=x+mess.size()+2;i++){
 		for(int j=y;j<=y+4;j++){
 			gotoxy(i,j);
 			cout<<" ";
 		}
+	}
+}
+
+int form_confirm(string mess){
+	int chon = 1;
+	ShowCur(false);
+	int x = 110+ (156-110-mess.size())/2;
+    string space = "";
+    for(int i=x;i<=x+mess.size()+1;i++){
+        space+=" ";
+    }
+	Frame_Drawing(25, 32, x, x+mess.size()+1);
+	gotoxy(x+1, 26);
+	cout<<mess;
+	Draw_Button("YES", x+(mess.size()-5)/3+1,28, 3);
+	Draw_Button("NO", x+(mess.size()-5)/3*2+4,28, 7);
+	char input;
+	while(true){
+		input=getch();
+		if(input==is_press_arrow_key){
+			input=getch();
+			if(input==LEFT){
+				if(chon==1) continue;
+				else{
+					chon=1;
+					Draw_Button("YES", x+(mess.size()-5)/3+1,28, 3);
+					Draw_Button("NO", x+(mess.size()-5)/3*2+4,28, 7);
+				}
+			}
+			if(input==RIGHT){
+				if(chon==0) continue;
+				else{
+					chon=0;
+					Draw_Button("YES", x+(mess.size()-5)/3+1,28, 7);
+					Draw_Button("NO", x+(mess.size()-5)/3*2+4,28, 3);
+				}
+			}
+		}
+		if(input==is_press_f){
+			getch();
+			continue;
+		}
+		if(input==ESC) return -1;
+		if(input==ENTER){
+            for (int j = 25; j <= 32; j++)
+            {
+                gotoxy(x, j);
+                cout << space;
+            }
+            return chon;
+        }
 	}
 }

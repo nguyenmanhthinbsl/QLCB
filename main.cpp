@@ -74,13 +74,11 @@ int main()
                 case 1:
                 {
                     DatVe(First_CB, root_HK);
-//                    getch();
                     break;
                 }
                 case 2:
                 {
                    HuyVe(First_CB, root_HK);
-                   getch();
                     break;
                 }
                 }

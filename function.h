@@ -13,7 +13,7 @@ void Deletedequi(PTR_HK &root_HK);
 
 int dem_CB_ChuaBay(PTR_ChuyenBay list);
 
-bool hanhkhach_chuabay(PTR_ChuyenBay list_CB, char* CMND);
+PTR_ChuyenBay hanhkhach_chuahoanthanhchuyenbay(PTR_ChuyenBay list_CB, char* CMND);
 PTR_ChuyenBay check_maCB_chuabay(PTR_ChuyenBay list_CB, char *maCB);
 void show_List_CB_chuabay(PTR_ChuyenBay l, int page_now, int count_CB);
 int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK);
@@ -57,7 +57,8 @@ void show_List_CB_chuabay(PTR_ChuyenBay l, int page_now, int count_CB){
 			gotoxy(2,(14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|"<<temp[i].ma_chuyenbay;
 			gotoxy(21, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<temp[i].ngaykhoihanh.gio<<":"<<temp[i].ngaykhoihanh.phut<<" "<<temp[i].ngaykhoihanh.ngay<<"/"<<temp[i].ngaykhoihanh.thang<<"/"<<temp[i].ngaykhoihanh.nam;
+			cout<<"|";
+			printDay_time(temp[i].ngaykhoihanh);
 			gotoxy(43,(14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|"<<temp[i].sohieu_maybay;
 			gotoxy(65, (14+i*2)-(page_now-1)*MAXLIST*2);
@@ -74,7 +75,8 @@ void show_List_CB_chuabay(PTR_ChuyenBay l, int page_now, int count_CB){
 			gotoxy(2,(14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|"<<temp[i].ma_chuyenbay;
 			gotoxy(21, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<temp[i].ngaykhoihanh.gio<<":"<<temp[i].ngaykhoihanh.phut<<" "<<temp[i].ngaykhoihanh.ngay<<"/"<<temp[i].ngaykhoihanh.thang<<"/"<<temp[i].ngaykhoihanh.nam;
+			cout<<"|";
+			printDay_time(temp[i].ngaykhoihanh);
 			gotoxy(43,(14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|"<<temp[i].sohieu_maybay;
 			gotoxy(65, (14+i*2)-(page_now-1)*MAXLIST*2);
@@ -89,14 +91,14 @@ void show_List_CB_chuabay(PTR_ChuyenBay l, int page_now, int count_CB){
 	delete[] temp;
 }
 
-bool hanhkhach_chuabay(PTR_ChuyenBay list_CB, char* CMND){
+PTR_ChuyenBay hanhkhach_chuahoanthanhchuyenbay(PTR_ChuyenBay list_CB, char* CMND){
 	PTR_ChuyenBay p;
 	for(p=list_CB;p!=NULL;p=p->next)
 		if(p->data.trangthai!=HUYCHUYEN && p->data.trangthai!=HOANTAT)
 			for(int i=1;i<=p->data.soVe;i++){
-				if(p->data.danhsachVe[i]==CMND) return true;
+				if(p->data.danhsachVe[i]==CMND) return p;
 			}
-	return false;
+	return NULL;
 }
 
 PTR_ChuyenBay check_maCB_chuabay(PTR_ChuyenBay list_CB, char *maCB){
@@ -139,7 +141,6 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     PTR_ChuyenBay p;
     while(run){
     	int y = wherey();
-    	if(key==ESC) break;
 		ShowCur(true);
     	switch(y){
     		case 6:{
@@ -216,6 +217,12 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 							else{
 								cout<<"NU";
 								strcpy(phai,"NU");
+							}
+							if(hanhkhach_chuahoanthanhchuyenbay(First_CB, CMND)!=NULL){
+   								Show_Message("ERROR","HANH KHACH DANG CO CHUYEN BAY");
+   								gotoxy(125+strlen(CMND), 8);
+    							key = 0;
+    							continue;
 							}
 						}else{
 							is_add_HK = true;
@@ -378,17 +385,20 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						key = 0;
 						continue;
 					}
-					
-//    				if(is_add_HK){
-//    					
-//					}else{
-//						if(!hanhkhach_chuabay(First_CB, CMND)){
-//								
-//						}
-//						else{
-//							
-//						}
-//					}
+    				if(is_add_HK){
+    					p->data.danhsachVe[maghe] = CMND;
+    					HanhKhach newHK;
+    					strcpy(newHK.CMND, CMND);
+    					strcpy(newHK.ho, ho);
+    					strcpy(newHK.ten, ten);
+    					if(strcpy(phai, "NAM")==0) newHK.phai = 1;
+    					else newHK.phai = 0;
+    					Add_HK_to_List(root_HK, newHK);
+					}else{
+						p->data.danhsachVe[maghe] = CMND;
+					}
+					Show_Message("SUCCESS","MUA VE THANH CONG");
+					show_List_CB_chuabay(First_CB, page_now, count_CB);
 				}else{
 					if(key==UP){
 						if(!is_add_HK) gotoxy(125+strlen(CMND), 8);
@@ -417,27 +427,152 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 				}
 				break;
 			}
+			default:{
+				gotoxy(125+strlen(maCB), 6);
+			}
 		}
     	
 	}
-	
-	Clear_Frame_Main();
 }
 
 int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     Clear_Frame_Main();
+    int page_now = 1;
+    int count_CB = dem_CB_ChuaBay(First_CB);
+    int count_page = (count_CB%10==0)? (count_CB/10) : (count_CB/10+1);
+    show_List_CB_chuabay(First_CB,page_now, count_CB);
     gotoxy(115, 6);
-    cout<<"Ma CB: ";
-    gotoxy(115, 8);
     cout<<"CMND: ";
-    gotoxy(115,10);
+    gotoxy(115, 8);
     cout<<"Ho: ";
-    gotoxy(115, 12);
+    gotoxy(115,10);
     cout<<"Ten: ";
-    gotoxy(115,14);
+    gotoxy(115, 12);
     cout<<"Phai: ";
+    gotoxy(115,14);
+    cout<<"Ma CB: ";
     gotoxy(115,16);
     cout<<"Ma Ghe: ";
+    gotoxy(115,18);
+    cout<<"SB Den: ";
+    gotoxy(115, 20);
+    cout<<"Time: ";
+    char key = 0;
+    char CMND[MAX_LENGTH_CMND+1] = "";
+    gotoxy(125,6);
+    PTR_ChuyenBay p;
+    int run = 1;
+    int soghe = 0;
+    while(run){
+    	int y = wherey();
+    	ShowCur(true);
+    	switch(y){
+    		case 6: {
+    			nhapChuoi(CMND, MAX_LENGTH_CMND, key, ONLY_NUMBER);
+    			if(key==ESC){
+    				run = 0;
+    				key = 0;
+    				break;
+				}
+				if(key==ENTER){
+					if(strlen(CMND)!=9&&strlen(CMND)!=12){
+    					Show_Message("ERROR","CMND KHONG HOP LE");
+    					gotoxy(125+strlen(CMND), 6);
+    					key = 0;
+    					continue;
+   					}
+   					PTR_HK hk = timkiem_HK(root_HK, CMND);
+   					if(hk!=NULL){
+   						gotoxy(125,8);
+   						cout<<"                              ";
+   						gotoxy(125,8);
+   						cout<<hk->info.ho;
+   						gotoxy(125,10); cout<<"                    ";
+						gotoxy(125,10); cout<<hk->info.ten;
+						gotoxy(125,12); cout<<"   ";
+						gotoxy(125,12);
+						if(hk->info.phai==1) cout<<"NAM";
+						else cout<<"NU";
+						PTR_ChuyenBay p = hanhkhach_chuahoanthanhchuyenbay(First_CB, CMND);
+						if(p!=NULL){
+							gotoxy(125, 14); cout<<"               ";
+							gotoxy(125, 14); cout<<p->data.ma_chuyenbay;
+							gotoxy(125, 16); cout<<"     ";
+							gotoxy(125, 16);
+							for(int i=1;i<=p->data.soVe;i++)
+								if(p->data.danhsachVe[i]==CMND){
+									cout<<i; 
+									soghe=i;
+									break;
+								}
+							gotoxy(125, 18); cout<<"                              ";
+							gotoxy(125, 18); cout<<p->data.sanbayden;
+							gotoxy(125 ,20); cout<<"                              ";
+							gotoxy(125, 20); printDay_time(p->data.ngaykhoihanh);
+							int chon = form_confirm("BAN CO MUON HUY VE KHONG");
+							if(chon==-1){
+								run = 0;
+    							key = 0;
+    							break;
+							}else if(chon ==1){
+								p->data.danhsachVe[soghe]="0";
+								Show_Message("SUCCESS","HUY VE THANH CONG");
+								show_List_CB_chuabay(First_CB,page_now, count_CB);
+								gotoxy(125, 14); cout<<"               ";
+								gotoxy(125, 16); cout<<"     ";
+								gotoxy(125, 18); cout<<"                              ";
+								gotoxy(125, 20); cout<<"                              ";
+							}else break;
+							
+						}else{
+							gotoxy(125, 14); cout<<"               ";
+							gotoxy(125, 16); cout<<"     ";
+			
+							gotoxy(125, 18); cout<<"                              ";
+							gotoxy(125, 20); cout<<"                              ";
+							Show_Message("ERROR","HANH KHACH CHUA DAT VE");
+    						gotoxy(125+strlen(CMND), 6);
+    						key = 0;
+    						continue;
+						}
+				    }else {
+				    	gotoxy(125,8);
+   						cout<<"                              ";
+   						gotoxy(125,10); cout<<"                    ";
+						gotoxy(125,12); cout<<"   ";
+						gotoxy(125, 14); cout<<"               ";
+						gotoxy(125, 16); cout<<"     ";
+						gotoxy(125, 18); cout<<"                              ";
+						gotoxy(125, 20); cout<<"                              ";
+				    	Show_Message("ERROR","HANH KHACH CHUA DAT VE");
+    					gotoxy(125+strlen(CMND), 6);
+    					key = 0;
+    					continue;
+					}
+				}
+				if(key==PAGEUP){
+					key = 0;
+					if(page_now==1) continue;
+					show_List_CB_chuabay(First_CB,--page_now, count_CB);
+					gotoxy(125+strlen(CMND),6);
+					continue;
+				}
+				if(key==PAGEDOWN){
+					key = 0;
+					if(page_now==count_page) continue;
+					show_List_CB_chuabay(First_CB, ++page_now, count_CB);
+					gotoxy(125+strlen(CMND),6);
+					continue;
+				}
+				break;
+			}
+			default:{
+				gotoxy(125+strlen(CMND),6);
+				continue;
+				break;
+			}
+		}
+    }
 }
 
 /*Function Deployment*/
@@ -492,7 +627,7 @@ void show_List_CB(PTR_ChuyenBay First){
 	PTR_ChuyenBay p;
 	for(p = First;p!=NULL;p=p->next){
 		cout<<p->data.ma_chuyenbay<<endl;
-		print_TG(p->data.ngaykhoihanh);
+		printDay_time(p->data.ngaykhoihanh);
 		for(int i=1;i<=p->data.soVe;i++){
 			cout<<p->data.danhsachVe[i]<<" ";
 		}
