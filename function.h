@@ -607,7 +607,7 @@ void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now){
 		if (p->data.danhsachVe[i] != "0"){
 			++stt;
 			if (stt <= page_now * 10){
-				if (stt >= (page_now - 1) * 10){
+				if (stt > (page_now - 1) * 10){
 					if(stt<page_now*10) y = 11 + (stt % 10) * 2;
 					else y = 11+10*2;
 					gotoxy(2, y);
@@ -647,7 +647,8 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 	int count_page;
 	if(soluongvedaban%10==0) count_page = soluongvedaban/10;
 	else count_page = soluongvedaban/10+1;
-	show_dsVe(p, root, 1);
+	int page_now = 1;
+	show_dsVe(p, root, page_now);
 	char input;
 	int run = 1;
 	while(run){
@@ -658,7 +659,25 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 			}
 			case ESC:{
 				run = 0;
-
+				break;
+			}
+			case is_press_arrow_key:{
+				input=getch();
+				if(input==PAGEUP){
+					if(page_now==1) continue;
+					show_dsVe(p, root, --page_now);
+				}else if(input==PAGEDOWN){
+					if(page_now==count_page) continue;
+					show_dsVe(p, root, ++page_now);
+				}
+				break;
+			}
+			case is_press_f:{
+				input=getch();
+				if(input==F4){
+					//Hàm edit chuyến bay
+				}
+				break;
 			}
 		}
 	}
@@ -695,7 +714,25 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 				if(p==NULL)
 					Show_Message("ERROR","KHONG TIM THAY CHUYEN BAY");
 				else{
-					gotoxy(1,1);
+					gotoxy(125,8);
+					cout<<"                              ";
+					gotoxy(125,8);
+					cout<<p->data.sanbayden;
+					gotoxy(125, 10);
+					cout<<"                              ";
+					gotoxy(125, 10);
+					printDay_time(p->data.ngaykhoihanh);
+					gotoxy(125, 12);
+					cout<<"                              ";
+					gotoxy(125, 12);
+					cout<<p->data.sohieu_maybay;
+					gotoxy(125, 14);
+					cout<<"                              ";
+					gotoxy(125, 14);
+					if(p->data.trangthai==HUYCHUYEN) cout<<"HUY CHUYEN";
+					else if(p->data.trangthai==HOANTAT) cout<<"HOAN TAT";
+					else if(p->data.trangthai==CONVE) cout<<"CON VE";
+					else if(p->data.trangthai==HETVE) cout<<"HET VE";
 					XuLyCB(p, root);
 					
 					show_List_CB(First_CB,page_now, count_CB,TATCA);
