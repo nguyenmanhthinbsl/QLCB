@@ -10,7 +10,7 @@
 
 using namespace std;
 
-unsigned long long ChangeCharToNum (char str[]);
+unsigned long long ChangeCharToNum (const char str[]);
 int toInt(string s);
 int toInt(char* s);
 string intToString(int i);
@@ -22,7 +22,7 @@ void Upper(char* S);
 
 /*Function Deployment*/
 
-unsigned long long ChangeCharToNum (char str[]){
+unsigned long long ChangeCharToNum (const char str[]){
 	
 	unsigned long long n = 0;
 	for(int i = 0; i<strlen(str); i++){
@@ -64,8 +64,11 @@ void nhapChuoi(char* str, int length, char &key, int type){
     		return;
 		}
     	if(input==is_press_f ){
-    		input = getch();
-    		continue;
+    		input=getch();
+            if(input==F4) {
+                key=F4;
+    		    continue;
+            }
 		}
 		if(input==is_press_arrow_key){
 			key = getch();

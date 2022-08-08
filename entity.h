@@ -174,11 +174,20 @@ int sovechuaban(ChuyenBay a){
 	return count;
 }
 
-PTR_HK timkiem_HK(PTR_HK root, char* CMND){
+PTR_HK timkiem_HK(PTR_HK root, const char* CMND){
 	PTR_HK nodeRun = root;
 	while(nodeRun!=NULL&&ChangeCharToNum(CMND)!=ChangeCharToNum(nodeRun->info.CMND)){
 		if(ChangeCharToNum(CMND)>ChangeCharToNum(nodeRun->info.CMND)) nodeRun = nodeRun->right;
 		else nodeRun=nodeRun->left;
 	}
 	return nodeRun;
+}
+
+PTR_ChuyenBay timcb_MACB(PTR_ChuyenBay first, char *MACB)
+{
+    PTR_ChuyenBay p;
+    for (p = first; p != NULL; p = p->next)
+        if (strcmp(p->data.ma_chuyenbay, MACB) == 0)
+            return p;
+    return NULL;
 }

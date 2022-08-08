@@ -68,7 +68,7 @@ int main()
                 }
                 case 0:
                 {
-                    XuLyDSChuyenBay(First_CB);
+                    XuLyDSChuyenBay(First_CB, root_HK);
                     break;
                 }
                 case 1:

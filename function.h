@@ -1,5 +1,6 @@
 #pragma once
 #include <conio.h>
+#include <cstring>
 #include "console.h"
 #include "entity.h"
 #include "file.h"
@@ -19,7 +20,9 @@ int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK);
 void Init_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void Handle_Main();
 void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
-void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB);
+void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now);
+void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
+void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root);
 
 int dem_CB(PTR_ChuyenBay list, string status){
 	int count = 0;
@@ -582,7 +585,86 @@ int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     }
 }
 
-void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB){
+void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now){
+	int soluongvedaban = p->data.soVe - sovechuaban(p->data);
+	int count_page;
+	if(soluongvedaban%10==0) count_page = soluongvedaban/10;
+	else count_page = soluongvedaban/10+1;
+	int stt = 0;
+	if(soluongvedaban==0){
+		gotoxy(30,11);
+		cout<<"KHONG CO HANH KHACH NAO";
+		ShowCur(false);
+		return;
+	}
+	Clear_Frame_Main();
+	gotoxy(2,11);
+	cout<<"+--------+-----------+-------------------+------------------------------+--------------+------+";
+	gotoxy(2,12);
+	cout<<"|  STT   |   SO VE   |      SO CMND      |            HO                |      TEN     | PHAI |";
+	int y;
+	for (int i = 1; i <= p->data.soVe; i++){
+		if (p->data.danhsachVe[i] != "0"){
+			++stt;
+			if (stt <= page_now * 10){
+				if (stt >= (page_now - 1) * 10){
+					if(stt<page_now*10) y = 11 + (stt % 10) * 2;
+					else y = 11+10*2;
+					gotoxy(2, y);
+					cout << "+--------+-----------+-------------------+------------------------------+--------------+------+";
+					gotoxy(2, y+1);
+					cout << "|" << stt;
+					gotoxy(11, y+1);
+					cout << "|" << i;
+					gotoxy(23, y+1);
+					cout << "|" << p->data.danhsachVe[i];
+					gotoxy(43, y+1);
+					PTR_HK hk = timkiem_HK(root, p->data.danhsachVe[i].c_str());
+					cout << "|" << hk->info.ho;
+					gotoxy(74, y+1);
+					cout << "|" << hk->info.ten;
+					gotoxy(89, y+1);
+					cout << "|";
+					if (hk->info.phai == 1)
+						cout << "NAM";
+					else
+						cout << "NU";
+					gotoxy(96, y+1);
+					cout << "|";
+				}
+			}
+			else
+				break;
+		}
+	}
+
+	gotoxy(2,wherey()+1);
+	cout<<"+--------+-----------+-------------------+------------------------------+--------------+------+";
+}
+
+void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
+	int soluongvedaban = p->data.soVe - sovechuaban(p->data);
+	int count_page;
+	if(soluongvedaban%10==0) count_page = soluongvedaban/10;
+	else count_page = soluongvedaban/10+1;
+	show_dsVe(p, root, 1);
+	char input;
+	int run = 1;
+	while(run){
+		input=getch();
+		switch(input){
+			case ENTER:{
+				break;
+			}
+			case ESC:{
+				run = 0;
+
+			}
+		}
+	}
+}
+
+void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 	Clear_Frame_Main();
     int page_now = 1;
     int count_CB = dem_CB(First_CB,TATCA);
@@ -602,16 +684,46 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB){
     char MaCB[MAX_LENGTH_MACB+1] = "";
     gotoxy(125,6);
     int run = 1;
+	PTR_ChuyenBay p;
 	while(run){
-		
+		ShowCur(true);
+		gotoxy(125+strlen(MaCB), 6);
+		nhapChuoi(MaCB, MAX_LENGTH_MACB, key, NO_SPACE);
+		switch(key){
+			case ENTER:{
+				p = timcb_MACB(First_CB, MaCB);
+				if(p==NULL)
+					Show_Message("ERROR","KHONG TIM THAY CHUYEN BAY");
+				else{
+					gotoxy(1,1);
+					XuLyCB(p, root);
+					
+					show_List_CB(First_CB,page_now, count_CB,TATCA);
+				}
+				break;
+			}
+			case ESC:{
+				key = 0;
+				run = 0;
+				break;
+			}
+			case PAGEUP:{
+				if(page_now==1) continue;
+				show_List_CB(First_CB,--page_now, count_CB,TATCA);
+				break;
+			}
+			case PAGEDOWN:{
+				if(page_now==count_page) continue;
+				show_List_CB(First_CB, ++page_now, count_CB, TATCA);
+				break;
+			}
+		}
 	}
 }
 
 /*Function Deployment*/
 void Init_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK)
 {   
-    
-
     int x = 4;
     resizeConsole(1300, 760);
     DisableResizeWindow();

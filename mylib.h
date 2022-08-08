@@ -13,9 +13,6 @@
 #define BUTTON_DELETE 83
 #define is_press_arrow_key -32
 #define is_press_f 0
-#define F1 59
-#define F2 60
-#define F3 61
 #define F4 62
 #define Ctrl_F 6
 #define TAB 9
