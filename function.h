@@ -675,7 +675,7 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 			case is_press_f:{
 				input=getch();
 				if(input==F4){
-					//Hàm edit chuyến bay
+					//Ham EDIT CB
 				}
 				break;
 			}
