@@ -4,8 +4,10 @@ using namespace std;
 
 int main()
 {
-	cout<<"             AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-	Sleep(1000);
-	cout << string(50, '\n');
+	char input;
+	do{
+		input=getch();
+		cout<<(int)input<<endl;
+	}while(input!=ENTER);
 	return 0;
 }

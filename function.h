@@ -669,13 +669,36 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 				}else if(input==PAGEDOWN){
 					if(page_now==count_page) continue;
 					show_dsVe(p, root, ++page_now);
+				}else if(input==BUTTON_DELETE){
+					int chon = form_confirm("BAN CO MUON HUY CHUYEN BAY");
+					if(chon==-1){
+						run = 0;
+						break;
+					}else if(chon==1){
+						if(p->data.trangthai==HOANTAT||p->data.trangthai==HUYCHUYEN){
+							Show_Message("ERROR","KHONG THE HUY CHUYEN BAY NAY");
+						}else{
+							p->data.trangthai = HUYCHUYEN;
+							
+							gotoxy(125, 14);
+							cout<<"                              ";
+							gotoxy(125, 14);
+							cout<<"HUY CHUYEN";
+							Show_Message("SUCCESS","HUY CHUYEN BAY THANH CONG");
+						}
+					}else if(chon==0){
+						break;
+					}
 				}
 				break;
 			}
 			case is_press_f:{
 				input=getch();
 				if(input==F4){
-					//Ham EDIT CB
+					if(p->data.trangthai==HOANTAT||p->data.trangthai==HUYCHUYEN) Show_Message("ERROR","KHONG THE HIEU CHINH");
+					else{
+						Show_Message("SUCCESS","HIEU CHINH THANH CONG");
+					}
 				}
 				break;
 			}
@@ -742,6 +765,9 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 			case ESC:{
 				key = 0;
 				run = 0;
+				break;
+			}
+			case INSERT:{
 				break;
 			}
 			case PAGEUP:{
@@ -903,10 +929,12 @@ int SelectLV2_2()
 {
     Clear_Frame_Main();
     Clear_Frame_Input();
-    string listMenu_2[3] = {"DANH SACH CHUYEN BAY",
-                            "       DAT VE       ",
-                            "       HUY VE       "};
-    for (int i = 0; i < 3; i++)
+    string listMenu_2[5] = {" DANH SACH CHUYEN BAY ",
+                            "        DAT VE        ",
+                            "        HUY VE        ",
+							"  DANH SACH GHE TRONG ",
+							"THONG KE SO CHUYEN BAY"};
+    for (int i = 0; i < 5; i++)
     {
         Draw_Button(listMenu_2[i], 40, 15 + i * 4, 7);
     }
@@ -930,7 +958,7 @@ int SelectLV2_2()
                 Draw_Button(listMenu_2[key], 40, 15+4*key, 6);
                 continue;
             }
-            else if (input == DOWN && key != 2)
+            else if (input == DOWN && key != 4)
             {
                 Draw_Button(listMenu_2[key], 40, 15+4*key, 7);
                 ++key;

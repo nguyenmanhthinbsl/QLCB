@@ -81,6 +81,12 @@ int main()
                    HuyVe(First_CB, root_HK);
                     break;
                 }
+                case 3:{ //THIN ML
+					break;
+				}
+				case 4:{ //THIN ML
+					break;
+				}
                 }
             }
         }

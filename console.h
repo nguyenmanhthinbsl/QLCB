@@ -143,7 +143,7 @@ void Show_Message(string type, string mess){
 	int x = 110 + ((156-110-mess.size())/2);
 	int y = 35;
 	if(type=="ERROR") Draw_Button(mess, x, y, 4);
-	else Draw_Button(mess, 125, 35, 3);
+	else Draw_Button(mess, x, y, 3);
 	Sleep(1500);
 	for(int i=x; i<=x+mess.size()+2;i++){
 		for(int j=y;j<=y+4;j++){
@@ -192,7 +192,14 @@ int form_confirm(string mess){
 			getch();
 			continue;
 		}
-		if(input==ESC) return -1;
+		if(input==ESC){
+            for (int j = 25; j <= 32; j++)
+            {
+                gotoxy(x, j);
+                cout << space;
+            }
+            return -1;
+        }
 		if(input==ENTER){
             for (int j = 25; j <= 32; j++)
             {
