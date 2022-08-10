@@ -2,8 +2,11 @@
 #include <conio.h>
 #include <cstring>
 #include "console.h"
+#include <string>
 #include "entity.h"
 #include "file.h"
+
+using namespace std;
 
 int SelectLV1();
 int SelectLV2_1();
@@ -21,6 +24,7 @@ void Init_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void Handle_Main();
 void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now);
+ChuyenBay NhapChuyenBay();
 void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root);
 
@@ -49,55 +53,41 @@ void show_List_CB(PTR_ChuyenBay l, int page_now, int count_CB, string status){
 			temp[dem++] = p->data;
 	}
 	if(count_CB==0){
-		gotoxy(30,11);
-		cout<<"KHONG CO CHUYEN BAY NAO CHUA HOAN THANH";
+		outtextxy(30,11,"KHONG CO CHUYEN BAY NAO CHUA HOAN THANH");
 		ShowCur(false);
 		delete[] temp;
 		return;
 	}
 	Clear_Frame_Main();
-	gotoxy(2,11);
-	cout<<"+------------------+---------------------+---------------------+-----------------------+--------------+";
-	gotoxy(2,12);
-	cout<<"|  MA CHUYEN BAY   |   NGAY GIO BAY      |   SO HIEU MAY BAY   |   SAN BAY DEN         | SO GHE TRONG |";
+	outtextxy(2,11,"+------------------+---------------------+---------------------+-----------------------+--------------+");
+	outtextxy(2,12,"|  MA CHUYEN BAY   |   NGAY GIO BAY      |   SO HIEU MAY BAY   |   SAN BAY DEN         | SO GHE TRONG |");
 	if(page_now!=count_page)
 		for(int i=(page_now-1)*MAXLIST; i<(page_now)*MAXLIST;i++){
-			gotoxy(2,(13+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"+------------------+---------------------+---------------------+-----------------------+--------------+";
-			gotoxy(2,(14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<temp[i].ma_chuyenbay;
+			outtextxy(2,(13+i*2)-(page_now-1)*MAXLIST*2,"+------------------+---------------------+---------------------+-----------------------+--------------+");
+			outtextxy(2,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].ma_chuyenbay));
 			gotoxy(21, (14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|";
 			printDay_time(temp[i].ngaykhoihanh);
-			gotoxy(43,(14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<temp[i].sohieu_maybay;
-			gotoxy(65, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<temp[i].sanbayden;
+			outtextxy(43,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].sohieu_maybay));
+			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,"|"+temp[i].sanbayden);
 			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|"<<sovechuaban(temp[i]);
-			gotoxy(104, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|";
+			outtextxy(104, (14+i*2)-(page_now-1)*MAXLIST*2,"|");
 		}
 	else
 		for(int i=(page_now-1)*MAXLIST;i<count_CB;i++){
-			gotoxy(2,(13+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"+------------------+---------------------+---------------------+-----------------------+--------------+";
-			gotoxy(2,(14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<temp[i].ma_chuyenbay;
+			outtextxy(2,(13+i*2)-(page_now-1)*MAXLIST*2,"+------------------+---------------------+---------------------+-----------------------+--------------+");
+			outtextxy(2,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].ma_chuyenbay));
 			gotoxy(21, (14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|";
 			printDay_time(temp[i].ngaykhoihanh);
-			gotoxy(43,(14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<temp[i].sohieu_maybay;
-			gotoxy(65, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<temp[i].sanbayden;
+			outtextxy(43,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].sohieu_maybay));
+			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,"|"+temp[i].sanbayden);
 			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|"<<sovechuaban(temp[i]);
-			gotoxy(104, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|";
+			outtextxy(104, (14+i*2)-(page_now-1)*MAXLIST*2,"|");
 		}
-	gotoxy(2,wherey()+1);
-	cout<<"+------------------+---------------------+---------------------+-----------------------+--------------+";
+	outtextxy(2,wherey()+1,"+------------------+---------------------+---------------------+-----------------------+--------------+");
 	delete[] temp;
 }
 
@@ -125,18 +115,12 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     int count_CB = dem_CB(First_CB,CHUABAY);
     int count_page = (count_CB%10==0)? (count_CB/10) : (count_CB/10+1);
     show_List_CB(First_CB,page_now, count_CB,CHUABAY);
-    gotoxy(115, 6);
-    cout<<"Ma CB: ";
-    gotoxy(115, 8);
-    cout<<"CMND: ";
-    gotoxy(115,10);
-    cout<<"Ho: ";
-    gotoxy(115, 12);
-    cout<<"Ten: ";
-    gotoxy(115,14);
-    cout<<"Phai: ";
-    gotoxy(115,16);
-    cout<<"Ma Ghe: ";
+	outtextxy(115,6,"Ma CB: ");
+	outtextxy(115,8,"CMND: ");
+	outtextxy(115,10,"Ho: ");
+	outtextxy(115,12,"Ten: ");
+	outtextxy(115,14,"Phai: ");
+	outtextxy(115,16,"Ma Ghe: ");
     char key = 0;
     char maCB[MAX_LENGTH_MACB+1] = "";
     char CMND[MAX_LENGTH_CMND+1] = "";
@@ -212,20 +196,16 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						PTR_HK hk = timkiem_HK(root_HK, CMND);
 						if(hk!=NULL){
 							is_add_HK = false;
-							gotoxy(125,10); cout<<"                              ";
-							gotoxy(125,10); cout<<hk->info.ho;
+							outtextxy(125, 10, hk->info.ho);
 							strcpy(ho, hk->info.ho);
-							gotoxy(125,12); cout<<"                    ";
-							gotoxy(125,12); cout<<hk->info.ten;
+							outtextxy(125, 12, hk->info.ten);
 							strcpy(ten, hk->info.ten);
-							gotoxy(125,14); cout<<"   ";
-							gotoxy(125,14);
 							if(hk->info.phai==1){
-								cout<<"NAM";
+								outtextxy(125,14,"NAM");
 								strcpy(phai,"NAM");
 							}
 							else{
-								cout<<"NU";
+								outtextxy(125,14,"NU");
 								strcpy(phai,"NU");
 							}
 							if(hanhkhach_chuahoanthanhchuyenbay(First_CB, CMND)!=NULL){
@@ -451,22 +431,14 @@ int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     int count_CB = dem_CB(First_CB,CHUABAY);
     int count_page = (count_CB%10==0)? (count_CB/10) : (count_CB/10+1);
     show_List_CB(First_CB,page_now, count_CB,CHUABAY);
-    gotoxy(115, 6);
-    cout<<"CMND: ";
-    gotoxy(115, 8);
-    cout<<"Ho: ";
-    gotoxy(115,10);
-    cout<<"Ten: ";
-    gotoxy(115, 12);
-    cout<<"Phai: ";
-    gotoxy(115,14);
-    cout<<"Ma CB: ";
-    gotoxy(115,16);
-    cout<<"Ma Ghe: ";
-    gotoxy(115,18);
-    cout<<"SB Den: ";
-    gotoxy(115, 20);
-    cout<<"Time: ";
+	outtextxy(115,6,"CMND: ");
+    outtextxy(115, 8,"Ho: ");
+    outtextxy(115,10,"Ten: ");
+    outtextxy(115, 12,"Phai: ");
+    outtextxy(115,14,"Ma CB: ");
+    outtextxy(115,16,"Ma Ghe: ");
+    outtextxy(115,18,"SB Den: ");
+    outtextxy(115, 20,"Time: ");
     char key = 0;
     char CMND[MAX_LENGTH_CMND+1] = "";
     gotoxy(125,6);
@@ -493,20 +465,13 @@ int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
    					}
    					PTR_HK hk = timkiem_HK(root_HK, CMND);
    					if(hk!=NULL){
-   						gotoxy(125,8);
-   						cout<<"                              ";
-   						gotoxy(125,8);
-   						cout<<hk->info.ho;
-   						gotoxy(125,10); cout<<"                    ";
-						gotoxy(125,10); cout<<hk->info.ten;
-						gotoxy(125,12); cout<<"   ";
-						gotoxy(125,12);
-						if(hk->info.phai==1) cout<<"NAM";
-						else cout<<"NU";
+   						outtextxy(125,8,hk->info.ho);
+   						outtextxy(125,10, hk->info.ten);
+						if(hk->info.phai==1) outtextxy(125,12,"NAM");
+						else outtextxy(125,12,"NU");
 						PTR_ChuyenBay p = hanhkhach_chuahoanthanhchuyenbay(First_CB, CMND);
 						if(p!=NULL){
-							gotoxy(125, 14); cout<<"               ";
-							gotoxy(125, 14); cout<<p->data.ma_chuyenbay;
+							outtextxy(125, 14, p->data.ma_chuyenbay);
 							gotoxy(125, 16); cout<<"     ";
 							gotoxy(125, 16);
 							for(int i=1;i<=p->data.soVe;i++)
@@ -515,8 +480,7 @@ int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 									soghe=i;
 									break;
 								}
-							gotoxy(125, 18); cout<<"                              ";
-							gotoxy(125, 18); cout<<p->data.sanbayden;
+							outtextxy(125, 18, p->data.sanbayden);
 							gotoxy(125 ,20); cout<<"                              ";
 							gotoxy(125, 20); printDay_time(p->data.ngaykhoihanh);
 							int chon = form_confirm("BAN CO MUON HUY VE KHONG");
@@ -528,32 +492,30 @@ int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 								p->data.danhsachVe[soghe]="0";
 								Show_Message("SUCCESS","HUY VE THANH CONG");
 								show_List_CB(First_CB,page_now, count_CB,CHUABAY);
-								gotoxy(125, 14); cout<<"               ";
-								gotoxy(125, 16); cout<<"     ";
-								gotoxy(125, 18); cout<<"                              ";
-								gotoxy(125, 20); cout<<"                              ";
+								outtextxy(125, 14,"");
+								outtextxy(125, 16,""); 
+								outtextxy(125, 18,""); 
+								outtextxy(125, 20,"");
 							}else break;
 							
 						}else{
-							gotoxy(125, 14); cout<<"               ";
-							gotoxy(125, 16); cout<<"     ";
-			
-							gotoxy(125, 18); cout<<"                              ";
-							gotoxy(125, 20); cout<<"                              ";
+							outtextxy(125, 14,""); 
+							outtextxy(125, 16,""); 
+							outtextxy(125, 18,""); 
+							outtextxy(125, 20,""); 
 							Show_Message("ERROR","HANH KHACH CHUA DAT VE");
     						gotoxy(125+strlen(CMND), 6);
     						key = 0;
     						continue;
 						}
 				    }else {
-				    	gotoxy(125,8);
-   						cout<<"                              ";
-   						gotoxy(125,10); cout<<"                    ";
-						gotoxy(125,12); cout<<"   ";
-						gotoxy(125, 14); cout<<"               ";
-						gotoxy(125, 16); cout<<"     ";
-						gotoxy(125, 18); cout<<"                              ";
-						gotoxy(125, 20); cout<<"                              ";
+				    	outtextxy(125,8,"");
+   						outtextxy(125,10,"");
+						outtextxy(125,12,"");
+						outtextxy(125, 14,"");
+						outtextxy(125, 16,"");
+						outtextxy(125, 18,"");
+						outtextxy(125, 20,"");
 				    	Show_Message("ERROR","HANH KHACH CHUA DAT VE");
     					gotoxy(125+strlen(CMND), 6);
     					key = 0;
@@ -592,16 +554,13 @@ void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now){
 	else count_page = soluongvedaban/10+1;
 	int stt = 0;
 	if(soluongvedaban==0){
-		gotoxy(30,11);
-		cout<<"KHONG CO HANH KHACH NAO";
+		outtextxy(30,11,"KHONG CO HANH KHACH NAO");
 		ShowCur(false);
 		return;
 	}
 	Clear_Frame_Main();
-	gotoxy(2,11);
-	cout<<"+--------+-----------+-------------------+------------------------------+--------------+------+";
-	gotoxy(2,12);
-	cout<<"|  STT   |   SO VE   |      SO CMND      |            HO                |      TEN     | PHAI |";
+	outtextxy(2,11,"+--------+-----------+-------------------+------------------------------+--------------+------+");
+	outtextxy(2,12,"|  STT   |   SO VE   |      SO CMND      |            HO                |      TEN     | PHAI |");
 	int y;
 	for (int i = 1; i <= p->data.soVe; i++){
 		if (p->data.danhsachVe[i] != "0"){
@@ -610,36 +569,25 @@ void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now){
 				if (stt > (page_now - 1) * 10){
 					if(stt<page_now*10) y = 11 + (stt % 10) * 2;
 					else y = 11+10*2;
-					gotoxy(2, y);
-					cout << "+--------+-----------+-------------------+------------------------------+--------------+------+";
-					gotoxy(2, y+1);
-					cout << "|" << stt;
-					gotoxy(11, y+1);
-					cout << "|" << i;
-					gotoxy(23, y+1);
-					cout << "|" << p->data.danhsachVe[i];
-					gotoxy(43, y+1);
+					outtextxy(2, y,"+--------+-----------+-------------------+------------------------------+--------------+------+");
+					outtextxy(2, y+1,"|"+intToString(stt));
+					outtextxy(11, y+1,"|"+intToString(i));
+					outtextxy(23, y+1,"|"+p->data.danhsachVe[i]);
 					PTR_HK hk = timkiem_HK(root, p->data.danhsachVe[i].c_str());
-					cout << "|" << hk->info.ho;
-					gotoxy(74, y+1);
-					cout << "|" << hk->info.ten;
-					gotoxy(89, y+1);
-					cout << "|";
+					outtextxy(43, y+1, concat("|", hk->info.ho));
+					outtextxy(74, y+1, concat("|", hk->info.ten));
 					if (hk->info.phai == 1)
-						cout << "NAM";
+						outtextxy(89, y+1,"|NAM");
 					else
-						cout << "NU";
-					gotoxy(96, y+1);
-					cout << "|";
+						outtextxy(89, y+1,"|NU");
+					outtextxy(96, y+1,"|");
 				}
 			}
 			else
 				break;
 		}
 	}
-
-	gotoxy(2,wherey()+1);
-	cout<<"+--------+-----------+-------------------+------------------------------+--------------+------+";
+	outtextxy(2,wherey()+1,"+--------+-----------+-------------------+------------------------------+--------------+------+");
 }
 
 void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
@@ -654,9 +602,8 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 	while(run){
 		input=getch();
 		switch(input){
-			case ENTER:{
+			case ENTER:
 				break;
-			}
 			case ESC:{
 				run = 0;
 				break;
@@ -680,10 +627,7 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 						}else{
 							p->data.trangthai = HUYCHUYEN;
 							
-							gotoxy(125, 14);
-							cout<<"                              ";
-							gotoxy(125, 14);
-							cout<<"HUY CHUYEN";
+							outtextxy(125, 14,"HUY CHUYEN");
 							Show_Message("SUCCESS","HUY CHUYEN BAY THANH CONG");
 						}
 					}else if(chon==0){
@@ -706,22 +650,21 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 	}
 }
 
+ChuyenBay NhapChuyenBay(){
+	
+}
+
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 	Clear_Frame_Main();
     int page_now = 1;
     int count_CB = dem_CB(First_CB,TATCA);
     int count_page = (count_CB%10==0)? (count_CB/10) : (count_CB/10+1);
     show_List_CB(First_CB,page_now, count_CB,TATCA);
-    gotoxy(115, 6);
-    cout<<"MA CB: ";
-    gotoxy(115, 8);
-    cout<<"SB DEN: ";
-    gotoxy(115,10);
-    cout<<"Time: ";
-    gotoxy(115, 12);
-    cout<<"SHMB: ";
-    gotoxy(115,14);
-    cout<<"Status: ";
+    outtextxy(115, 6,"MA CB: ");
+    outtextxy(115, 8,"SB DEN: ");
+    outtextxy(115,10,"Time: ");
+    outtextxy(115, 12,"SHMB: ");
+    outtextxy(115,14,"Status: ");
     char key = 0;
     char MaCB[MAX_LENGTH_MACB+1] = "";
     gotoxy(125,6);
@@ -737,25 +680,15 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 				if(p==NULL)
 					Show_Message("ERROR","KHONG TIM THAY CHUYEN BAY");
 				else{
-					gotoxy(125,8);
-					cout<<"                              ";
-					gotoxy(125,8);
-					cout<<p->data.sanbayden;
-					gotoxy(125, 10);
-					cout<<"                              ";
+					outtextxy(125,8, p->data.sanbayden);
+					outtextxy(125, 10,"");
 					gotoxy(125, 10);
 					printDay_time(p->data.ngaykhoihanh);
-					gotoxy(125, 12);
-					cout<<"                              ";
-					gotoxy(125, 12);
-					cout<<p->data.sohieu_maybay;
-					gotoxy(125, 14);
-					cout<<"                              ";
-					gotoxy(125, 14);
-					if(p->data.trangthai==HUYCHUYEN) cout<<"HUY CHUYEN";
-					else if(p->data.trangthai==HOANTAT) cout<<"HOAN TAT";
-					else if(p->data.trangthai==CONVE) cout<<"CON VE";
-					else if(p->data.trangthai==HETVE) cout<<"HET VE";
+					outtextxy(125, 12, p->data.sohieu_maybay);
+					if(p->data.trangthai==HUYCHUYEN) outtextxy(125, 14,"HUY CHUYEN");
+					else if(p->data.trangthai==HOANTAT) outtextxy(125, 14, "HOAN TAT");
+					else if(p->data.trangthai==CONVE) outtextxy(125, 14, "CON VE");
+					else if(p->data.trangthai==HETVE) outtextxy(125, 14, "HET VE");
 					XuLyCB(p, root);
 					
 					show_List_CB(First_CB,page_now, count_CB,TATCA);
@@ -768,6 +701,7 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 				break;
 			}
 			case INSERT:{
+				ChuyenBay temp = NhapChuyenBay();
 				break;
 			}
 			case PAGEUP:{
@@ -817,7 +751,6 @@ void Init_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK)
     Draw_Button("CTRL+F:TIM KIEM", x, height - 3, 7);
     x = wherex() + 2;
     Draw_Button("F4:CHINH SUA", x, height - 3, 7);
-    
     Read_File(list_MB, First_CB, root_HK);
 }
 
@@ -828,7 +761,6 @@ void show_List_MB(List_MayBay list){
 	}
 }
 
-
 void Deletedequi(PTR_HK &root_HK){
 	if(root_HK != NULL){
 		Deletedequi(root_HK->left);
@@ -837,17 +769,13 @@ void Deletedequi(PTR_HK &root_HK){
 	}
 }
 
-void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK)
-{
-	
+void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK){
 	Write_File(list_MB, First_CB, root_HK);
-    
     //Delete Memory List May Bay
     for(int i=0;i<list_MB.soluong;i++){
         if(list_MB.nodes[i]==NULL) break;
         delete list_MB.nodes[i];
     }
-
     //Delete Memory List Chuyen Bay
     while(First_CB!=NULL){
         PTR_ChuyenBay temp = First_CB;
@@ -855,51 +783,40 @@ void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK)
         delete[] temp->data.danhsachVe;
         delete temp;
     }
-	
 	//Delete Memory List Hanh Khach
     Deletedequi(root_HK);
-
     Clear_Frame_Main();
     Clear_Frame_Input();
     Draw_GoodBye();
 }
 
-int SelectLV1()
-{
+int SelectLV1(){
     string listMenu[2] = {" QUAN LY MAY BAY  ", "QUAN LY CHUYEN BAY"};
     for (int i = 0; i < 2; i++)
-    {
         Draw_Button(listMenu[i], 40, 15 + i * 4, 7);
-    }
     int key = 0;
     Draw_Button(listMenu[key], 40, 15, 6);
     char input;
-    while (1)
-    {
+    while (1){
         input = getch();
         if (input == ENTER)
             break;
         if (input == ESC)
             return -1;
-        if (input == is_press_arrow_key)
-        {
+        if (input == is_press_arrow_key){
             input = getch();
-            if (input == UP && key != 0)
-            {
+            if (input == UP && key != 0){
                 Draw_Button(listMenu[key], 40, 15+key*4, 7);
                 --key;
                 Draw_Button(listMenu[key], 40, 15, 6);
                 continue;
-            }
-            else if (input == DOWN && key != 1)
-            {
+            }else if (input == DOWN && key != 1){
                 Draw_Button(listMenu[key], 40, 15, 7);
                 ++key;
                 Draw_Button(listMenu[key], 40, 15+key*4, 6);
                 continue;
             }
-            else
-                continue;
+            else continue;
         }
     }
     return key;
@@ -911,13 +828,10 @@ int SelectLV2_1()
     Clear_Frame_Input();
     string listMenu_1[1] = {"DANH SACH MAY BAY"};
     for (int i = 0; i < 1; i++)
-    {
         Draw_Button(listMenu_1[i], 40, 15 + i * 4, 7);
-    }
     Draw_Button(listMenu_1[0], 40, 15, 6);
     char input;
-    while ((input = getch()) != ENTER)
-    {
+    while ((input = getch()) != ENTER){
         if (input == ESC)
             return -1;
         else continue;
@@ -925,8 +839,7 @@ int SelectLV2_1()
     return 1;
 }
 
-int SelectLV2_2()
-{
+int SelectLV2_2(){
     Clear_Frame_Main();
     Clear_Frame_Input();
     string listMenu_2[5] = {" DANH SACH CHUYEN BAY ",
@@ -935,40 +848,32 @@ int SelectLV2_2()
 							"  DANH SACH GHE TRONG ",
 							"THONG KE SO CHUYEN BAY"};
     for (int i = 0; i < 5; i++)
-    {
         Draw_Button(listMenu_2[i], 40, 15 + i * 4, 7);
-    }
     int key = 0;
     Draw_Button(listMenu_2[key], 40, 15+4*key, 6);
     char input;
-    while (1)
-    {
+    while (1){
         input = getch();
         if (input == ENTER)
             break;
         if (input == ESC)
             return -1;
-        if (input == is_press_arrow_key)
-        {
+        if (input == is_press_arrow_key){
             input = getch();
-            if (input == UP && key != 0)
-            {
+            if (input == UP && key != 0){
                 Draw_Button(listMenu_2[key], 40, 15+4*key, 7);
                 --key;
                 Draw_Button(listMenu_2[key], 40, 15+4*key, 6);
                 continue;
             }
-            else if (input == DOWN && key != 4)
-            {
+            else if (input == DOWN && key != 4) {
                 Draw_Button(listMenu_2[key], 40, 15+4*key, 7);
                 ++key;
                 Draw_Button(listMenu_2[key], 40, 15+4*key, 6);
                 continue;
             }
-            else
-                continue;
+        	else continue;
         }
     }
     return key;
 }
-

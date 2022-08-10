@@ -19,6 +19,7 @@ void LTrim(char* S);
 void RTrim(char* S);
 void Trim(char* S);
 void Upper(char* S);
+string concat(string a, string b);
 
 /*Function Deployment*/
 
@@ -136,4 +137,6 @@ void Upper(char* S){
             S[i] = S[i] - 32;
 }
 
-
+string concat(string a, string b){
+    return a+b;
+}

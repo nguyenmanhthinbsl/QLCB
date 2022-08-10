@@ -22,7 +22,6 @@ using namespace std;
 #define Fork_Bot_2_Line 202
 #define Fork_Top_2_Line 203
 
-
 void Frame_Drawing(int top, int bot, int left, int right);
 void Clear_Frame_Main();
 void Clear_Frame_Input();
@@ -33,6 +32,7 @@ void Draw_Name_Project();
 void Draw_GoodBye();
 void Show_Message(string type, string mess);
 int form_confirm(string mess);
+void outtextxy(int x, int y, string mess);
 
 /*Function Deployment*/
 void Frame_Drawing(int top, int bot, int left, int right) {
@@ -133,9 +133,6 @@ void Clear_Frame_Input(){
         gotoxy(111,j);
         cout<<"                                             ";
     }
-    for(int i=111;i<=155;i++){
-        
-    }
 }
 
 void Show_Message(string type, string mess){
@@ -209,4 +206,13 @@ int form_confirm(string mess){
             return chon;
         }
 	}
+}
+
+void outtextxy(int x, int y, string mess){
+    if(x==125){
+        gotoxy(x,y);
+        cout<<"                              ";
+    }
+    gotoxy(x,y);
+    cout<<mess;
 }
