@@ -24,7 +24,8 @@ void Init_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void Handle_Main();
 void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now);
-ChuyenBay NhapChuyenBay();
+bool check_new_MACB(PTR_ChuyenBay First, char* maCB);
+ChuyenBay NhapChuyenBay(PTR_ChuyenBay First);
 void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root);
 
@@ -69,7 +70,7 @@ void show_List_CB(PTR_ChuyenBay l, int page_now, int count_CB, string status){
 			cout<<"|";
 			printDay_time(temp[i].ngaykhoihanh);
 			outtextxy(43,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].sohieu_maybay));
-			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,"|"+temp[i].sanbayden);
+			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,concat("|",temp[i].sanbayden));
 			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|"<<sovechuaban(temp[i]);
 			outtextxy(104, (14+i*2)-(page_now-1)*MAXLIST*2,"|");
@@ -82,7 +83,7 @@ void show_List_CB(PTR_ChuyenBay l, int page_now, int count_CB, string status){
 			cout<<"|";
 			printDay_time(temp[i].ngaykhoihanh);
 			outtextxy(43,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].sohieu_maybay));
-			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,"|"+temp[i].sanbayden);
+			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,concat("|",temp[i].sanbayden));
 			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
 			cout<<"|"<<sovechuaban(temp[i]);
 			outtextxy(104, (14+i*2)-(page_now-1)*MAXLIST*2,"|");
@@ -650,8 +651,78 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 	}
 }
 
-ChuyenBay NhapChuyenBay(){
-	
+bool check_new_MACB(PTR_ChuyenBay First,char* maCB){
+	Trim(maCB);
+	if(strlen(maCB)==0) return false;
+	PTR_ChuyenBay p;
+	for(p=First; p!=NULL;p=p->next)
+		if(strcmp(p->data.ma_chuyenbay, maCB)==0) return false;
+	return true;
+}
+
+ChuyenBay NhapChuyenBay(PTR_ChuyenBay First){
+	ChuyenBay ret;
+	strcpy(ret.ma_chuyenbay,"");
+	strcpy(ret.sohieu_maybay,"");
+	strcpy(ret.sanbayden, "");
+	ret.ngaykhoihanh.gio = 0;
+	ret.ngaykhoihanh.phut = 0;
+	ret.ngaykhoihanh.ngay = 1;
+	ret.ngaykhoihanh.thang = 1;
+	ret.ngaykhoihanh.nam = 1995;
+	outtextxy(125, 6, ret.ma_chuyenbay);
+	outtextxy(125, 8, ret.sanbayden);
+	// outtextxy(125, 10, )
+	outtextxy(125, 12, ret.sohieu_maybay);
+	outtextxy(125, 14, "CON VE");
+	gotoxy(125+strlen(ret.ma_chuyenbay), 6);
+	int run = 1;
+	char key = 0;
+	while(run){
+		int y = wherey();
+    	ShowCur(true);
+		switch(y){
+			case 6:{
+				nhapChuoi(ret.ma_chuyenbay, MAX_LENGTH_MACB, key, NO_SPACE);
+				if(key == ENTER||key==TAB||key==DOWN){
+					if(!check_new_MACB(First,ret.ma_chuyenbay)){
+						Show_Message("ERROR","MA CB KHONG HOP LE");
+						gotoxy(125+strlen(ret.ma_chuyenbay), 6);
+					}else gotoxy(125+strlen(ret.sanbayden), 8);
+					key = 0;
+				}else if(key == ESC){
+					run = key = 0;
+				}else if(key==PAGEUP){
+
+				}else if(key==PAGEDOWN){
+
+				}
+				break;
+			}
+			case 8:{
+				nhapChuoi(ret.sanbayden, MAX_LENGTH_SBD, key, ALL_CHAR);
+				if(key==ENTER||key==TAB||key==DOWN){
+					LTrim(ret.sanbayden); RTrim(ret.sanbayden);
+					if(strlen(ret.sanbayden)==0){
+						Show_Message("ERROR","SAN BAY DEN KHONG HOP LE");
+						gotoxy(125+strlen(ret.sanbayden), 8);
+					}else gotoxy(125, 10);
+					
+				}else if(key==ESC) run = key = 0;
+
+				key = 0;
+				break;
+			}
+			case 10:{
+
+			}
+			case 12:{
+				
+			}
+		}
+	}
+	getch();
+	return ret;
 }
 
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
@@ -690,7 +761,6 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 					else if(p->data.trangthai==CONVE) outtextxy(125, 14, "CON VE");
 					else if(p->data.trangthai==HETVE) outtextxy(125, 14, "HET VE");
 					XuLyCB(p, root);
-					
 					show_List_CB(First_CB,page_now, count_CB,TATCA);
 				}
 				break;
@@ -701,7 +771,7 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 				break;
 			}
 			case INSERT:{
-				ChuyenBay temp = NhapChuyenBay();
+				ChuyenBay temp = NhapChuyenBay(First_CB);
 				break;
 			}
 			case PAGEUP:{

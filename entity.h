@@ -13,6 +13,7 @@ const int MAX_LENGTH_MACB = 15;
 const int MAX_LENGTH_CMND = 12;
 const int MAX_LENGTH_HO = 30;
 const int MAX_LENGTH_TEN = 20;
+const int MAX_LENGTH_SBD = 30;
 
 using namespace std;
 
@@ -40,7 +41,7 @@ struct ChuyenBay
 {
     char ma_chuyenbay[MAX_LENGTH_MACB+1]; 
     Day_time ngaykhoihanh; 
-    string sanbayden;
+    char sanbayden[MAX_LENGTH_SBD+1];
     int trangthai; 
     char sohieu_maybay[MAX_LENGTH_SHMB+1]; 
     string *danhsachVe;

@@ -61,10 +61,9 @@ Day_time Time_now(){
 	a_now.phut = ltm -> tm_min;
 	
 	return a_now;  
-	}
+}
 	
-
-bool TGQK( Day_time qk) // kiem tra thoi gian qua khu 
+bool TGQK( Day_time qk)
 {
 	if(kt(qk) == false)
 	  return false;
@@ -95,7 +94,8 @@ bool TGQK( Day_time qk) // kiem tra thoi gian qua khu
 	    }
 	}
 }
-bool TGTL( Day_time tl) // kiem tra thoi gian tuong lai
+
+bool TGTL( Day_time tl)
 {     
 	if(kt(tl) == false)
 	return false;
@@ -120,7 +120,7 @@ bool TGTL( Day_time tl) // kiem tra thoi gian tuong lai
 		                if(ht.phut > tl.phut ) return false;
                      	else if(ht.phut < tl.phut) return true;
                      	else
-                     	   return false;
+                     	return false;
 	              }
 	         }
 	    }
@@ -138,33 +138,4 @@ unsigned long int datetoday(Day_time Tg) {
 			dayofmonth +=1;
 		}
         return  dayofyear+ dayofmonth+ Tg.ngay-1;
-}
- 
-bool TrongVongBaGio(Day_time Time1,Day_time Time2 ){
-	  unsigned long int SoPhut_T1 = datetoday(Time1)*24*60 + Time1.gio*60 + Time1.phut;
-	  unsigned long int SoPhut_T2 = datetoday(Time2)*24*60 + Time2.gio*60 + Time2.phut;
-	  if(abs(SoPhut_T1 - SoPhut_T2) <= 180)
-	     return true;
-		    
-		    
-   return false;
-}
-
-bool TG_30p_TruocBay(Day_time TimeDuKien ){
-	 Day_time now =Time_now();
-	 unsigned long int SoPhut_T1 = datetoday(TimeDuKien)*24*60 + TimeDuKien.gio*60 + TimeDuKien.phut;
-	 unsigned long int SoPhut_now = datetoday(now)*24*60 + now.gio*60 + now.phut;
-		if((SoPhut_T1 > SoPhut_now) && (SoPhut_T1-SoPhut_now) < 30)
-		    return true;
-	
-   return false;
-}
-bool ThoiGianCamThemCB(Day_time TimeDuKien ){
-	 Day_time now =Time_now();
-	unsigned long int SoPhut_T1 = datetoday(TimeDuKien)*24*60 + TimeDuKien.gio*60 + TimeDuKien.phut;
-	 unsigned long int SoPhut_now = datetoday(now)*24*60 + now.gio*60 + now.phut;
-		if((SoPhut_T1 > SoPhut_now) && (SoPhut_T1-SoPhut_now) < 300)
-		    return true;
-	
-   return false;
 }
