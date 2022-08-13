@@ -61,7 +61,7 @@ struct HanhKhach
     char CMND[MAX_LENGTH_CMND+1];
     char ho[MAX_LENGTH_HO+1];
     char ten[MAX_LENGTH_TEN+1];
-    int phai; //1: Male, 0: Female
+    int phai; //1: Nam, 0: Nu
 };
 
 struct NodeHanhKhach

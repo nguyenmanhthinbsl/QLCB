@@ -27,9 +27,11 @@ void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now);
 bool check_new_MACB(PTR_ChuyenBay First, char* maCB);
 Day_time charToDay(char* dt);
 void input_date(Day_time &dt, char &key);
-ChuyenBay NhapChuyenBay(PTR_ChuyenBay First);
+bool check_exist_SHMB(List_MayBay list, char* SHMB);
+bool check_SHMB_for_newCB(PTR_ChuyenBay First, List_MayBay listMB, char* SHMB);
+ChuyenBay NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list);
 void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
-void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root);
+void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list);
 
 int dem_CB(PTR_ChuyenBay list, string status){
 	int count = 0;
@@ -673,81 +675,94 @@ void input_date(Day_time &dt, char &key){
 	strcpy(dt_char, tocharDate(dt));
 	int x = wherex();
 	int y = wherey();
-	int run = 1;
 	char input;
-	int length;
-	while(run){
-		length = strlen(dt_char);
+	while(1){
 		input=getch();
-		if(input==ENTER||input==ESC||input==TAB){
+		if(input==ESC){
+			key = ESC;
+			return;
+		}else if(input==ENTER||input==TAB){
 			if(strlen(dt_char)!=16){
+				x = wherex();
+				y = wherey();
 				Show_Message("ERROR","THOI GIAN KHONG HOP LE");
+				gotoxy(x,y);
 				return;
 			}
 			dt = charToDay(dt_char);
 			key = input;
 			return;
-		}
-		if(input==is_press_arrow_key||key==is_press_f){
+		}else if(input==is_press_arrow_key||key==is_press_f){
 			key = getch();
 			return;
-		}
-		if(input==BACKSPACE){
-			if(length==0) continue;
-			if(length==15||length==12||length==7||length==4){
+		}else if(input==BACKSPACE){
+			if(strlen(dt_char)==0) continue;
+			else if(strlen(dt_char)==15||strlen(dt_char)==12||strlen(dt_char)==7||strlen(dt_char)==4){
 				x = x-2;
 				outtextxy(x,y,"  ");
 				gotoxy(x,y);
-				dt_char[length-1]='\0';
-				dt_char[length-2]='\0';
+				dt_char[strlen(dt_char)-1]='\0';
+				dt_char[strlen(dt_char)-1]='\0';
 			}else{
 				x = x-1;
 				outtextxy(x,y," ");
 				gotoxy(x,y);
-				dt_char[length-1]='\0';
+				dt_char[strlen(dt_char)-1]='\0';
 			}
-		}
-		if(input>='0'&&input<='9'){
-			if(length==16) continue;
-			else if(length==1||length==4){
+		}else if(input>='0'&&input<='9'){
+			if(strlen(dt_char)==16) continue;
+			else if(strlen(dt_char)==1||strlen(dt_char)==4){
 				cout<<input<<"/";
-				dt_char[length]=input;
-				dt_char[length+1] = '/';
+				dt_char[strlen(dt_char)]=input;
+				dt_char[strlen(dt_char)] = '/';
 			}
-			else if(length==9){
+			else if(strlen(dt_char)==9){
 				cout<<input<<" ";
-				dt_char[length]=input;
-				dt_char[length+1] = ' ';
+				dt_char[strlen(dt_char)]=input;
+				dt_char[strlen(dt_char)] = ' ';
 			}
-			else if(length==12){
+			else if(strlen(dt_char)==12){
 				cout<<input<<":";
-				dt_char[length]=input;
-				dt_char[length+1] = ':';
-			}else if(length==2||length==5){
+				dt_char[strlen(dt_char)]=input;
+				dt_char[strlen(dt_char)] = ':';
+			}else if(strlen(dt_char)==2||strlen(dt_char)==5){
 				cout<<"/"<<input;
-				dt_char[length]='/';
-				dt_char[length+1] = input;
-			}else if(length==10){
+				dt_char[strlen(dt_char)]='/';
+				dt_char[strlen(dt_char)] = input;
+			}else if(strlen(dt_char)==10){
 				cout<<" "<<input;
-				dt_char[length]=' ';
-				dt_char[length+1] = input;
-			}else if(length==13){
+				dt_char[strlen(dt_char)]=' ';
+				dt_char[strlen(dt_char)] = input;
+			}else if(strlen(dt_char)==13){
 				cout<<":"<<input;
-				dt_char[length]=':';
-				dt_char[length+1] = input;
+				dt_char[strlen(dt_char)]=':';
+				dt_char[strlen(dt_char)] = input;
 			}
 			else{
 				cout<<input;
-				dt_char[length]=input;
+				dt_char[strlen(dt_char)]=input;
 			}
 			x = wherex();
 			y = wherey();
 		}
 	} 
-
 }
 
-ChuyenBay NhapChuyenBay(PTR_ChuyenBay First){
+bool check_exist_SHMB(List_MayBay list, char* SHMB){
+	for(int i = 0;i<list.soluong;i++)
+		if(strcmp(list.nodes[i]->sohieu_maybay, SHMB)==0) return true;
+	return false;
+}
+
+bool check_SHMB_for_newCB(PTR_ChuyenBay First, List_MayBay listMB, char* SHMB){
+	PTR_ChuyenBay cb;
+	if(!check_exist_SHMB(listMB, SHMB)) return false;
+	for(cb = First; cb!=NULL;cb = cb->next)
+		if(strcmp(cb->data.sohieu_maybay, SHMB)==0&&(cb->data.trangthai!=HUYCHUYEN)&&(cb->data.trangthai!=HOANTAT)) return false;
+	return true;
+}
+
+ChuyenBay NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 	ChuyenBay ret;
 	strcpy(ret.ma_chuyenbay,"");
 	strcpy(ret.sohieu_maybay,"");
@@ -793,14 +808,14 @@ ChuyenBay NhapChuyenBay(PTR_ChuyenBay First){
 					key = 0;
 				}else if(key==ESC) run = key = 0;
 
-				key = 0;
 				break;
 			}
 			case 10:{
+				outtextxy(125, 10, tocharDate(ret.ngaykhoihanh));
 				input_date(ret.ngaykhoihanh, key);
 				if(key==ENTER||key==TAB||key==DOWN){
 					if(!TGTL(ret.ngaykhoihanh)){
-						Show_Message("ERROR","THOI GIAN KHONG HOP LE");
+						Show_Message("ERROR","THOI GIAN KHONG HOP LE!");
 						gotoxy(125+strlen(tocharDate(ret.ngaykhoihanh)), 10);
 					}else gotoxy(125+strlen(ret.sohieu_maybay), 12);
 					key = 0;
@@ -810,16 +825,22 @@ ChuyenBay NhapChuyenBay(PTR_ChuyenBay First){
 			case 12:{
 				nhapChuoi(ret.sohieu_maybay, MAX_LENGTH_SHMB, key, NO_SPACE);
 				if(key==ENTER){
-					
+					if(!check_SHMB_for_newCB(First, list, ret.sohieu_maybay)){
+						Show_Message("ERROR","SHMB KHONG HOP LE");
+						gotoxy(125+ strlen(ret.sohieu_maybay), 12);
+					}else{
+						//Insert Order
+						Show_Message("SUCCESS","THEM CHUYEN BAY THANH CONG");
+					}
 				}else if(key==ESC) run = key = 0;
+				break;
 			}
 		}
 	}
-	getch();
 	return ret;
 }
 
-void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
+void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
 	Clear_Frame_Main();
     int page_now = 1;
     int count_CB = dem_CB(First_CB,TATCA);
@@ -864,7 +885,12 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 				break;
 			}
 			case INSERT:{
-				ChuyenBay temp = NhapChuyenBay(First_CB);
+				ChuyenBay temp = NhapChuyenBay(First_CB, list);
+				outtextxy(125, 6,MaCB);
+				outtextxy(125, 8,"");
+				outtextxy(125, 10,"");
+				outtextxy(125,12, "");
+				outtextxy(125, 14,"");
 				break;
 			}
 			case PAGEUP:{
@@ -881,7 +907,6 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 	}
 }
 
-/*Function Deployment*/
 void Init_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK)
 {   
     int x = 4;

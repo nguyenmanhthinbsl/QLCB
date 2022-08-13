@@ -1,13 +1,12 @@
 #include <iostream>
-#include "sub_function.h"
+#include "function.h"
 using namespace std;
 
 int main()
 {
-	char input;
-	do{
-		input=getch();
-		cout<<(int)input<<endl;
-	}while(input!=ENTER);
+	Day_time a = Time_now();
+	cout<<tocharDate(a);
+	char key = 0;
+	input_date(a, key);
 	return 0;
 }
