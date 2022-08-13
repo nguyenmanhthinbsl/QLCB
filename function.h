@@ -25,6 +25,8 @@ void Handle_Main();
 void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now);
 bool check_new_MACB(PTR_ChuyenBay First, char* maCB);
+Day_time charToDay(char* dt);
+void input_date(Day_time &dt, char &key);
 ChuyenBay NhapChuyenBay(PTR_ChuyenBay First);
 void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root);
@@ -66,9 +68,7 @@ void show_List_CB(PTR_ChuyenBay l, int page_now, int count_CB, string status){
 		for(int i=(page_now-1)*MAXLIST; i<(page_now)*MAXLIST;i++){
 			outtextxy(2,(13+i*2)-(page_now-1)*MAXLIST*2,"+------------------+---------------------+---------------------+-----------------------+--------------+");
 			outtextxy(2,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].ma_chuyenbay));
-			gotoxy(21, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|";
-			printDay_time(temp[i].ngaykhoihanh);
+			outtextxy(21, (14+i*2)-(page_now-1)*MAXLIST*2, concat("|", tocharDate(temp[i].ngaykhoihanh)));
 			outtextxy(43,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].sohieu_maybay));
 			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,concat("|",temp[i].sanbayden));
 			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
@@ -79,9 +79,7 @@ void show_List_CB(PTR_ChuyenBay l, int page_now, int count_CB, string status){
 		for(int i=(page_now-1)*MAXLIST;i<count_CB;i++){
 			outtextxy(2,(13+i*2)-(page_now-1)*MAXLIST*2,"+------------------+---------------------+---------------------+-----------------------+--------------+");
 			outtextxy(2,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].ma_chuyenbay));
-			gotoxy(21, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|";
-			printDay_time(temp[i].ngaykhoihanh);
+			outtextxy(21, (14+i*2)-(page_now-1)*MAXLIST*2, concat("|",tocharDate(temp[i].ngaykhoihanh)));
 			outtextxy(43,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].sohieu_maybay));
 			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,concat("|",temp[i].sanbayden));
 			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
@@ -483,7 +481,7 @@ int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 								}
 							outtextxy(125, 18, p->data.sanbayden);
 							gotoxy(125 ,20); cout<<"                              ";
-							gotoxy(125, 20); printDay_time(p->data.ngaykhoihanh);
+							outtextxy(125, 20, tocharDate(p->data.ngaykhoihanh));
 							int chon = form_confirm("BAN CO MUON HUY VE KHONG");
 							if(chon==-1){
 								run = 0;
@@ -660,19 +658,104 @@ bool check_new_MACB(PTR_ChuyenBay First,char* maCB){
 	return true;
 }
 
+Day_time charToDay(char* dt){
+	Day_time a;
+	a.ngay = (dt[0]-48)*10+(dt[1]-48);
+	a.thang = (dt[3]-48)*10+(dt[4]-48);
+	a.nam = (dt[6]-48)*1000+(dt[7]-48)*100+(dt[8]-48)*10+(dt[9]-48);
+	a.gio = (dt[11]-48)*10+(dt[12]-48);
+	a.phut = (dt[14]-48)*10+(dt[15]-48);
+	return a;
+}
+
+void input_date(Day_time &dt, char &key){
+	char dt_char[17] = "";
+	strcpy(dt_char, tocharDate(dt));
+	int x = wherex();
+	int y = wherey();
+	int run = 1;
+	char input;
+	int length;
+	while(run){
+		length = strlen(dt_char);
+		input=getch();
+		if(input==ENTER||input==ESC||input==TAB){
+			if(strlen(dt_char)!=16){
+				Show_Message("ERROR","THOI GIAN KHONG HOP LE");
+				return;
+			}
+			dt = charToDay(dt_char);
+			key = input;
+			return;
+		}
+		if(input==is_press_arrow_key||key==is_press_f){
+			key = getch();
+			return;
+		}
+		if(input==BACKSPACE){
+			if(length==0) continue;
+			if(length==15||length==12||length==7||length==4){
+				x = x-2;
+				outtextxy(x,y,"  ");
+				gotoxy(x,y);
+				dt_char[length-1]='\0';
+				dt_char[length-2]='\0';
+			}else{
+				x = x-1;
+				outtextxy(x,y," ");
+				gotoxy(x,y);
+				dt_char[length-1]='\0';
+			}
+		}
+		if(input>='0'&&input<='9'){
+			if(length==16) continue;
+			else if(length==1||length==4){
+				cout<<input<<"/";
+				dt_char[length]=input;
+				dt_char[length+1] = '/';
+			}
+			else if(length==9){
+				cout<<input<<" ";
+				dt_char[length]=input;
+				dt_char[length+1] = ' ';
+			}
+			else if(length==12){
+				cout<<input<<":";
+				dt_char[length]=input;
+				dt_char[length+1] = ':';
+			}else if(length==2||length==5){
+				cout<<"/"<<input;
+				dt_char[length]='/';
+				dt_char[length+1] = input;
+			}else if(length==10){
+				cout<<" "<<input;
+				dt_char[length]=' ';
+				dt_char[length+1] = input;
+			}else if(length==13){
+				cout<<":"<<input;
+				dt_char[length]=':';
+				dt_char[length+1] = input;
+			}
+			else{
+				cout<<input;
+				dt_char[length]=input;
+			}
+			x = wherex();
+			y = wherey();
+		}
+	} 
+
+}
+
 ChuyenBay NhapChuyenBay(PTR_ChuyenBay First){
 	ChuyenBay ret;
 	strcpy(ret.ma_chuyenbay,"");
 	strcpy(ret.sohieu_maybay,"");
 	strcpy(ret.sanbayden, "");
-	ret.ngaykhoihanh.gio = 0;
-	ret.ngaykhoihanh.phut = 0;
-	ret.ngaykhoihanh.ngay = 1;
-	ret.ngaykhoihanh.thang = 1;
-	ret.ngaykhoihanh.nam = 1995;
+	ret.ngaykhoihanh = Time_now();
 	outtextxy(125, 6, ret.ma_chuyenbay);
 	outtextxy(125, 8, ret.sanbayden);
-	// outtextxy(125, 10, )
+	outtextxy(125, 10, tocharDate(ret.ngaykhoihanh));
 	outtextxy(125, 12, ret.sohieu_maybay);
 	outtextxy(125, 14, "CON VE");
 	gotoxy(125+strlen(ret.ma_chuyenbay), 6);
@@ -700,24 +783,35 @@ ChuyenBay NhapChuyenBay(PTR_ChuyenBay First){
 				break;
 			}
 			case 8:{
-				nhapChuoi(ret.sanbayden, MAX_LENGTH_SBD, key, ALL_CHAR);
+				nhapChuoi(ret.sanbayden, MAX_LENGTH_SBD, key, ONLY_WORD);
 				if(key==ENTER||key==TAB||key==DOWN){
 					LTrim(ret.sanbayden); RTrim(ret.sanbayden);
 					if(strlen(ret.sanbayden)==0){
 						Show_Message("ERROR","SAN BAY DEN KHONG HOP LE");
 						gotoxy(125+strlen(ret.sanbayden), 8);
-					}else gotoxy(125, 10);
-					
+					}else gotoxy(125+strlen(tocharDate(ret.ngaykhoihanh)), 10);
+					key = 0;
 				}else if(key==ESC) run = key = 0;
 
 				key = 0;
 				break;
 			}
 			case 10:{
-
+				input_date(ret.ngaykhoihanh, key);
+				if(key==ENTER||key==TAB||key==DOWN){
+					if(!TGTL(ret.ngaykhoihanh)){
+						Show_Message("ERROR","THOI GIAN KHONG HOP LE");
+						gotoxy(125+strlen(tocharDate(ret.ngaykhoihanh)), 10);
+					}else gotoxy(125+strlen(ret.sohieu_maybay), 12);
+					key = 0;
+				}else if(key==ESC) run=key=0;
+				break;
 			}
 			case 12:{
-				
+				nhapChuoi(ret.sohieu_maybay, MAX_LENGTH_SHMB, key, NO_SPACE);
+				if(key==ENTER){
+					
+				}else if(key==ESC) run = key = 0;
 			}
 		}
 	}
@@ -753,8 +847,7 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root){
 				else{
 					outtextxy(125,8, p->data.sanbayden);
 					outtextxy(125, 10,"");
-					gotoxy(125, 10);
-					printDay_time(p->data.ngaykhoihanh);
+					outtextxy(125, 10, tocharDate(p->data.ngaykhoihanh));
 					outtextxy(125, 12, p->data.sohieu_maybay);
 					if(p->data.trangthai==HUYCHUYEN) outtextxy(125, 14,"HUY CHUYEN");
 					else if(p->data.trangthai==HOANTAT) outtextxy(125, 14, "HOAN TAT");

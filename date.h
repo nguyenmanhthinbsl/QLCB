@@ -14,10 +14,6 @@ struct Day_time{
 	int phut;
 };
 
-void printDay_time(Day_time a){
-	cout<<a.ngay<<"/"<<a.thang<<"/"<<a.nam<<" "<<a.gio<<":"<<a.phut;
-}
-
 bool LeapYear(int year)
 {
     if (year % 400==0) return true;
@@ -26,27 +22,29 @@ bool LeapYear(int year)
 }
 bool kt(Day_time a)
 {
+	if(a.thang<=0||a.thang>12) return false;
 	if(a.thang == 2)
 	{
 		if(LeapYear(a.nam)) // kt nam nhuan
 		{
 			if(a.ngay > 29) 
 			   return false;
-			return true;
 		}
 		else
 		{
 			if(a.ngay > 28) 
 			   return false;
-			return true;
 		}
 	}
 	else 
 	{
-		if(a.ngay > day[a.thang])  // kt ngay trong thang
+		if(a.ngay > day[a.thang])
 		  return false;
-		return true;
 	}
+	if(a.nam<=1900) return false;
+	if(a.gio<0||a.gio>23) return false;
+	if(a.phut<0||a.phut>59) return false;
+	return true;
 }
 
 Day_time Time_now(){

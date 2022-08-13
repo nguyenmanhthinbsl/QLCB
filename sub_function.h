@@ -7,6 +7,7 @@
 #include <cstring>
 #include <sstream>
 #include "mylib.h"
+#include "date.h"
 
 using namespace std;
 
@@ -20,8 +21,41 @@ void RTrim(char* S);
 void Trim(char* S);
 void Upper(char* S);
 string concat(string a, string b);
+char* tocharDate(Day_time &mytime);
 
 /*Function Deployment*/
+
+char* tocharDate(Day_time &mytime)
+{
+	char *temp = new char[100];
+	temp[0] = '\0';
+	
+	if (mytime.ngay < 10)  
+	 	strcat(temp, "0");
+    strcpy(temp, concat(temp, intToString(mytime.ngay)).c_str());
+	strcat(temp, "/");
+	if (mytime.thang < 10) 
+		strcat(temp, "0");
+    strcpy(temp, concat(temp, intToString(mytime.thang)).c_str());
+	strcat(temp, "/");
+	if (mytime.nam < 10)
+		strcat(temp, "0");
+	if (mytime.nam < 100)
+		strcat(temp, "0");
+	if (mytime.nam < 1000)
+		strcat(temp, "0");
+    strcpy(temp, concat(temp, intToString(mytime.nam)).c_str());
+	strcat(temp, " ");
+	if (mytime.gio < 10)  
+	 	strcat(temp, "0");
+    strcpy(temp, concat(temp, intToString(mytime.gio)).c_str());
+	strcat(temp, ":");
+	if (mytime.phut < 10)  
+	 	strcat(temp, "0");
+    strcpy(temp, concat(temp, intToString(mytime.phut)).c_str());
+	return temp;
+}
+
 
 unsigned long long ChangeCharToNum (const char str[]){
 	
@@ -64,14 +98,7 @@ void nhapChuoi(char* str, int length, char &key, int type){
     		key=input;
     		return;
 		}
-    	if(input==is_press_f ){
-    		input=getch();
-            if(input==F4) {
-                key=F4;
-    		    continue;
-            }
-		}
-		if(input==is_press_arrow_key){
+		if(input==is_press_arrow_key||input==is_press_f){
 			key = getch();
 			return;
 		}

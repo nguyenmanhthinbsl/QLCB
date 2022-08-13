@@ -57,7 +57,7 @@ void Read_File(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK){
 			ChuyenBay cb;
 			strcpy(cb.ma_chuyenbay, strtok(input,"|"));
 			char * date = strtok(NULL,"|");
-			cb.sanbayden = strtok(NULL,"|");
+			strcpy(cb.sanbayden, strtok(NULL,"|"));
 			strcpy(cb.sohieu_maybay, strtok(NULL,"|"));
 			cb.soVe = toInt(strtok(NULL,"|"));
 			cb.trangthai = toInt(strtok(NULL,"|"));
