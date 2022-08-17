@@ -4,9 +4,12 @@ using namespace std;
 
 int main()
 {
-	Day_time a = Time_now();
-	cout<<tocharDate(a);
+	char a[11];
+	strcpy(a,"");
+	cout<<strlen(a);
 	char key = 0;
-	input_date(a, key);
+	nhapChuoi(a, 8, key,NO_SPACE);
+	cout<<endl<<a;
+
 	return 0;
 }

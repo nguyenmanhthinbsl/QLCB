@@ -30,7 +30,7 @@ Day_time charToDay(char* dt);
 void input_date(char* date, char &key);
 bool check_exist_SHMB(List_MayBay list, char* SHMB);
 bool check_SHMB_for_newCB(PTR_ChuyenBay First, List_MayBay listMB, char* SHMB);
-ChuyenBay NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list);
+void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list);
 void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list);
 
@@ -741,20 +741,24 @@ bool check_SHMB_for_newCB(PTR_ChuyenBay First, List_MayBay listMB, char* SHMB){
 	return true;
 }
 
-ChuyenBay NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
+void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
+	int page_now = 1;
+    int count_CB = dem_CB(First,TATCA);
+    int count_page = (count_CB%10==0)? (count_CB/10) : (count_CB/10+1);
+	show_List_CB(First,page_now, count_CB,TATCA);
 	ChuyenBay ret;
-	strcpy(ret.ma_chuyenbay,"");
-	strcpy(ret.sohieu_maybay,"");
-	strcpy(ret.sanbayden, "");
+	char ma_chuyenbay[MAX_LENGTH_MACB+1] = "";
+	char SHMB[MAX_LENGTH_SHMB+1]="";
+	char sanbayden[MAX_LENGTH_SBD+1]="";
 	ret.ngaykhoihanh = Time_now();
 	char date[17];
 	strcpy(date, tocharDate(ret.ngaykhoihanh));
-	outtextxy(125, 6, ret.ma_chuyenbay);
-	outtextxy(125, 8, ret.sanbayden);
+	outtextxy(125, 6, ma_chuyenbay);
+	outtextxy(125, 8, sanbayden);
 	outtextxy(125, 10, date);
-	outtextxy(125, 12, ret.sohieu_maybay);
+	outtextxy(125, 12, SHMB);
 	outtextxy(125, 14, "CON VE");
-	gotoxy(125+strlen(ret.ma_chuyenbay), 6);
+	gotoxy(125+strlen(ma_chuyenbay), 6);
 	int run = 1;
 	char key = 0;
 	while(run){
@@ -762,33 +766,48 @@ ChuyenBay NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
     	ShowCur(true);
 		switch(y){
 			case 6:{
-				nhapChuoi(ret.ma_chuyenbay, MAX_LENGTH_MACB, key, NO_SPACE);
+				nhapChuoi(ma_chuyenbay, MAX_LENGTH_MACB, key, NO_SPACE);
 				if(key == ENTER||key==TAB||key==DOWN){
-					if(!check_new_MACB(First,ret.ma_chuyenbay)){
+					if(!check_new_MACB(First,ma_chuyenbay)){
 						Show_Message("ERROR","MA CB KHONG HOP LE");
-						gotoxy(125+strlen(ret.ma_chuyenbay), 6);
-					}else gotoxy(125+strlen(ret.sanbayden), 8);
-					key = 0;
+						gotoxy(125+strlen(ma_chuyenbay), 6);
+						key = 0;
+					}else gotoxy(125+strlen(sanbayden), 8);
 				}else if(key == ESC){
 					run = key = 0;
 				}else if(key==PAGEUP){
-
+					if(page_now==1) continue;
+					show_List_CB(First,--page_now, count_CB,TATCA);
+					break;
 				}else if(key==PAGEDOWN){
-
+					if(page_now==count_page) continue;
+					show_List_CB(First,++page_now, count_CB,TATCA);
+					break;
 				}
 				break;
 			}
 			case 8:{
-				nhapChuoi(ret.sanbayden, MAX_LENGTH_SBD, key, ONLY_WORD);
+				nhapChuoi(sanbayden, MAX_LENGTH_SBD, key, ONLY_WORD);
 				if(key==ENTER||key==TAB||key==DOWN){
-					LTrim(ret.sanbayden); RTrim(ret.sanbayden);
-					if(strlen(ret.sanbayden)==0){
+					LTrim(sanbayden); RTrim(sanbayden);
+					if(strlen(sanbayden)==0){
 						Show_Message("ERROR","SAN BAY DEN KHONG HOP LE");
-						gotoxy(125+strlen(ret.sanbayden), 8);
-					}else gotoxy(125+strlen(tocharDate(ret.ngaykhoihanh)), 10);
+						gotoxy(125+strlen(sanbayden), 8);
+					}else gotoxy(125+strlen(date), 10);
 					key = 0;
 				}else if(key==ESC) run=key=0;
-
+				else if(key==UP){
+					gotoxy(125+strlen(ma_chuyenbay), 6);
+					key = 0;
+				}else if(key==PAGEUP){
+					if(page_now==1) continue;
+					show_List_CB(First,--page_now, count_CB,TATCA);
+					break;
+				}else if(key==PAGEDOWN){
+					if(page_now==count_page) continue;
+					show_List_CB(First,++page_now, count_CB,TATCA);
+					break;
+				}
 				break;
 			}
 			case 10:{
@@ -802,28 +821,55 @@ ChuyenBay NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 						if(!TGTL(ret.ngaykhoihanh)){
 							Show_Message("ERROR","THOI GIAN KHONG HOP LE");
 							gotoxy(125+strlen(date), 10);
-						}else gotoxy(125+strlen(ret.sohieu_maybay), 12);
+						}else gotoxy(125+strlen(SHMB), 12);
 					}
 					key = 0;
 				}else if(key==ESC) run=key=0;
+				else if(key==UP){
+					gotoxy(125+strlen(sanbayden), 8);
+					key = 0;
+				}else if(key==PAGEUP){
+					if(page_now==1) continue;
+					show_List_CB(First,--page_now, count_CB,TATCA);
+					break;
+				}else if(key==PAGEDOWN){
+					if(page_now==count_page) continue;
+					show_List_CB(First,++page_now, count_CB,TATCA);
+					break;
+				}
 				break;
 			}
 			case 12:{
-				nhapChuoi(ret.sohieu_maybay, MAX_LENGTH_SHMB, key, NO_SPACE);
+				nhapChuoi(SHMB, MAX_LENGTH_SHMB, key, NO_SPACE);
 				if(key==ENTER){
-					if(!check_SHMB_for_newCB(First, list, ret.sohieu_maybay)){
+					if(!check_SHMB_for_newCB(First, list, SHMB)){
 						Show_Message("ERROR","SHMB KHONG HOP LE");
-						gotoxy(125+ strlen(ret.sohieu_maybay), 12);
+						gotoxy(125+ strlen(SHMB), 12);
 					}else{
-						//Insert Order
+						strcpy(ret.ma_chuyenbay, ma_chuyenbay);
+						strcpy(ret.sanbayden, sanbayden);
+						strcpy(ret.sohieu_maybay, SHMB);
+						InsertOrder_CB(list,First, ret);
 						Show_Message("SUCCESS","THEM CHUYEN BAY THANH CONG");
+						run = 0;
 					}
 				}else if(key==ESC) run = key = 0;
+				else if(key==UP){
+					gotoxy(125+strlen(date), 10);
+					key = 0;
+				}else if(key==PAGEUP){
+					if(page_now==1) continue;
+					show_List_CB(First,--page_now, count_CB,TATCA);
+					break;
+				}else if(key==PAGEDOWN){
+					if(page_now==count_page) continue;
+					show_List_CB(First,++page_now, count_CB,TATCA);
+					break;
+				}
 				break;
 			}
 		}
 	}
-	return ret;
 }
 
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
@@ -871,7 +917,11 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
 				break;
 			}
 			case INSERT:{
-				ChuyenBay temp = NhapChuyenBay(First_CB, list);
+				NhapChuyenBay(First_CB, list);
+				page_now = 1;
+    			count_CB += 1;
+    			count_page = (count_CB%10==0)? (count_CB/10) : (count_CB/10+1);
+    			show_List_CB(First_CB,page_now, count_CB,TATCA);
 				outtextxy(125, 6,MaCB);
 				outtextxy(125, 8,"");
 				outtextxy(125, 10,"");

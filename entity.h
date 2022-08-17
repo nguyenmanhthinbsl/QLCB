@@ -192,3 +192,18 @@ PTR_ChuyenBay timcb_MACB(PTR_ChuyenBay first, char *MACB)
             return p;
     return NULL;
 }
+
+
+void InsertOrder_CB(List_MayBay list, PTR_ChuyenBay &First_CB, ChuyenBay temp){
+    PTR_ChuyenBay t,s,p;
+    Init_CB(list, temp);
+    p = Init_Node_CB(temp);
+    for(s = First_CB;s!=NULL&&sosanhTG(s->data.ngaykhoihanh, p->data.ngaykhoihanh)==-1;t = s,s=s->next);
+    if(s==First_CB){
+        p->next = First_CB;
+        First_CB=p;
+    }else{
+        p->next=s;
+        t->next=p;
+    }
+}

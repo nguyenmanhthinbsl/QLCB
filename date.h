@@ -137,3 +137,25 @@ unsigned long int datetoday(Day_time Tg) {
 		}
         return  dayofyear+ dayofmonth+ Tg.ngay-1;
 }
+
+int sosanhTG(Day_time a, Day_time b){
+	if(a.nam>b.nam) return 1;
+	else if(a.nam<b.nam) return -1;
+	else{
+		if(a.thang>b.thang) return 1;
+		else if(a.thang<b.thang) return -1;
+		else{
+			if(a.ngay>b.ngay) return 1;
+			else if(a.ngay<b.ngay) return -1;
+			else{
+				if(a.gio>b.gio) return 1;
+				else if(a.gio<b.gio) return -1;
+				else{
+					if(a.phut>b.phut) return 1;
+					else if(a.phut<b.phut) return -1;
+					return 0;
+				}
+			}
+		}
+	}
+}
