@@ -207,3 +207,17 @@ void InsertOrder_CB(List_MayBay list, PTR_ChuyenBay &First_CB, ChuyenBay temp){
         t->next=p;
     }
 }
+
+void sort_CB(PTR_ChuyenBay First){ //Selection
+    PTR_ChuyenBay i,j, min;
+    ChuyenBay temp;
+    for(i=First;i->next!=NULL; i=i->next){
+        min = i;
+        for(j=i->next;j!=NULL;j=j->next)
+            if(sosanhTG(min->data.ngaykhoihanh, j->data.ngaykhoihanh)>0) min = j;
+        //swap data
+        temp = min->data;
+        min->data = i->data;
+        i->data = temp;
+    }
+}

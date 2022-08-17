@@ -592,6 +592,7 @@ void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now){
 }
 
 void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
+	Clear_Frame_Main();
 	int soluongvedaban = p->data.soVe - sovechuaban(p->data);
 	int count_page;
 	if(soluongvedaban%10==0) count_page = soluongvedaban/10;
@@ -642,7 +643,30 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 				if(input==F4){
 					if(p->data.trangthai==HOANTAT||p->data.trangthai==HUYCHUYEN) Show_Message("ERROR","KHONG THE HIEU CHINH");
 					else{
-						Show_Message("SUCCESS","HIEU CHINH THANH CONG");
+						int run = 1;
+						char key1=0;
+						char date[17] = "";
+						strcpy(date, tocharDate(p->data.ngaykhoihanh));
+						while(run){
+							gotoxy(125+strlen(date), 10);
+							input_date(date, key1);
+							if(key1==ENTER){
+								if(strlen(date)!=16||TGTL(charToDay(date))==false)
+									Show_Message("ERROR", "THOI GIAN KHONG HOP LE");
+								else{
+									p->data.ngaykhoihanh = charToDay(date);
+									Show_Message("SUCCESS","HIEU CHINH THANH CONG");
+									run = 0;
+								}
+							}
+							else if(key1==ESC){
+								outtextxy(125, 10, tocharDate(p->data.ngaykhoihanh));
+								ShowCur(false);
+								run=0;
+							}
+							key1=0;
+						}
+						
 					}
 				}
 				break;
@@ -671,6 +695,7 @@ Day_time charToDay(char* dt){
 }
 
 void input_date(char* date, char &key){
+	ShowCur(true);
 	char input;
 	while(1){
 		input=getch();
@@ -906,6 +931,7 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
 					else if(p->data.trangthai==CONVE) outtextxy(125, 14, "CON VE");
 					else if(p->data.trangthai==HETVE) outtextxy(125, 14, "HET VE");
 					XuLyCB(p, root);
+					sort_CB(First_CB);
 					show_List_CB(First_CB,page_now, count_CB,TATCA);
 				}
 				break;
