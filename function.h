@@ -26,7 +26,6 @@ void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now);
 bool check_new_MACB(PTR_ChuyenBay First, char* maCB);
 Day_time charToDay(char* dt);
-// void input_date(Day_time &dt, char &key);
 void input_date(char* date, char &key);
 bool check_exist_SHMB(List_MayBay list, char* SHMB);
 bool check_SHMB_for_newCB(PTR_ChuyenBay First, List_MayBay listMB, char* SHMB);
