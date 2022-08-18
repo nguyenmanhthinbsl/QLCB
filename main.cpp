@@ -41,14 +41,12 @@ int main()
                 }
                 case 0:
                 {
-                    cout << "HELLO";
-                    getch();
+                    QuanLyMayBay(list_MB);
                     break;
                 }
                 case 1:
                 {
-                    cout << "HELLo";
-                    getch();
+                    //Chua Co Chuc Nang
                     break;
                 }
                 }

@@ -12,7 +12,7 @@ int SelectLV1();
 int SelectLV2_1();
 int SelectLV2_2();
 int Insert_MB(List_MayBay &list, MayBay* maybay);
-void show_List_MB(List_MayBay list);
+void show_List_MB(List_MayBay list, int page_now);
 void Deletedequi(PTR_HK &root_HK);
 int dem_CB(PTR_ChuyenBay list, string status);
 PTR_ChuyenBay hanhkhach_chuahoanthanhchuyenbay(PTR_ChuyenBay list_CB, char* CMND);
@@ -32,6 +32,10 @@ bool check_SHMB_for_newCB(PTR_ChuyenBay First, List_MayBay listMB, char* SHMB);
 void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list);
 void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list);
+
+//Quynh
+void QuanLyMayBay(List_MayBay &list_MB);
+
 
 int dem_CB(PTR_ChuyenBay list, string status){
 	int count = 0;
@@ -1003,11 +1007,32 @@ void Init_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK)
     Read_File(list_MB, First_CB, root_HK);
 }
 
-void show_List_MB(List_MayBay list){
-	gotoxy(0,0);
-	for(int i=0;i<list.soluong;i++){
-		cout<<list.nodes[i]->loai_maybay<<"\t"<<list.nodes[i]->sohieu_maybay<<"\t"<<list.nodes[i]->socho<<"\t"<<list.nodes[i]->sochuyendabay<<"\n";
+void show_List_MB(List_MayBay list, int page_now){
+	int count_page;
+	if(list.soluong%10==0) count_page = list.soluong/10;
+	else count_page = list.soluong/10+1;
+	if(list.soluong==0){
+		outtextxy(30,11,"KHONG CO MAY BAY NAO");
+		ShowCur(false);
+		return;
 	}
+	Clear_Frame_Main();
+	outtextxy(2,11,"+--------+--------------------+---------------------------------------------+--------------+");
+	outtextxy(2,12,"|  STT   |     SO HIEU MB     |                 LOAI MAY BAY                |     SO CHO   |");
+	int y=11;
+	for (int i=0; i < list.soluong; i++){
+		if (i < page_now * 10&& i>=(page_now-1)*10){
+			y+=2;
+			outtextxy(2, y, "+--------+--------------------+---------------------------------------------+--------------+");
+			outtextxy(2, y + 1, "|"+intToString(i+1));
+			outtextxy(11, y + 1, concat("|", list.nodes[i]->sohieu_maybay));
+			outtextxy(32, y + 1, concat("|", list.nodes[i]->loai_maybay));
+			outtextxy(78, y + 1, "|"+intToString(list.nodes[i]->socho));
+			outtextxy(93, y + 1, "|");
+		}
+		if(i>=(page_now)*10) break;
+	}
+	outtextxy(2,wherey()+1,"+--------+--------------------+---------------------------------------------+--------------+");
 }
 
 void Deletedequi(PTR_HK &root_HK){
@@ -1078,14 +1103,33 @@ int SelectLV2_1()
     string listMenu_1[1] = {"DANH SACH MAY BAY"};
     for (int i = 0; i < 1; i++)
         Draw_Button(listMenu_1[i], 40, 15 + i * 4, 7);
+	int key = 0;
     Draw_Button(listMenu_1[0], 40, 15, 6);
     char input;
-    while ((input = getch()) != ENTER){
+    while (1){
+        input = getch();
+        if (input == ENTER)
+            break;
         if (input == ESC)
             return -1;
-        else continue;
+        if (input == is_press_arrow_key){
+            input = getch();
+            if (input == UP && key != 0){
+                Draw_Button(listMenu_1[key], 40, 15+4*key, 7);
+                --key;
+                Draw_Button(listMenu_1[key], 40, 15+4*key, 6);
+                continue;
+            }
+            else if (input == DOWN && key != 0) {
+                Draw_Button(listMenu_1[key], 40, 15+4*key, 7);
+                ++key;
+                Draw_Button(listMenu_1[key], 40, 15+4*key, 6);
+                continue;
+            }
+        	else continue;
+        }
     }
-    return 1;
+    return key;
 }
 
 int SelectLV2_2(){
@@ -1125,4 +1169,31 @@ int SelectLV2_2(){
         }
     }
     return key;
+}
+
+//Quynh
+void QuanLyMayBay(List_MayBay &list_MB){
+	Clear_Frame_Main();
+    int page_now = 1;
+    int count_page = (list_MB.soluong%10==0)? (list_MB.soluong/10) : (list_MB.soluong/10+1);
+	show_List_MB(list_MB, page_now);
+	int run = 1;
+	char key = 0;
+	while(run){
+		ShowCur(true);
+		getch();
+		key = getch();
+		switch(key){
+			case PAGEUP:{
+				if(page_now==1) continue;
+				show_List_MB(list_MB,--page_now);
+				break;
+			}
+			case PAGEDOWN:{
+				if(page_now==count_page) continue;
+				show_List_MB(list_MB, ++page_now);
+				break;
+			}
+		}
+	}
 }
