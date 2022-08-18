@@ -8,7 +8,7 @@ using namespace std;
 
 const int MAXLIST_MAYBAY = 300;
 const int MAX_LENGTH_SHMB = 15;
-const int MAX_LENGTH_LOAIMB = 40;
+const int MAX_LENGTH_LOAIMB = 30;
 const int MAX_LENGTH_MACB = 15;
 const int MAX_LENGTH_CMND = 12;
 const int MAX_LENGTH_HO = 30;

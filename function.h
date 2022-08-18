@@ -34,6 +34,7 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list);
 
 //Quynh
+void XuLyMB(MayBay *p);
 void QuanLyMayBay(List_MayBay &list_MB);
 
 
@@ -1172,6 +1173,10 @@ int SelectLV2_2(){
 }
 
 //Quynh
+void XuLyMB(MayBay *p){
+
+}
+
 void QuanLyMayBay(List_MayBay &list_MB){
 	Clear_Frame_Main();
     int page_now = 1;
@@ -1179,11 +1184,29 @@ void QuanLyMayBay(List_MayBay &list_MB){
 	show_List_MB(list_MB, page_now);
 	int run = 1;
 	char key = 0;
+	outtextxy(115, 6,"SHMB: ");
+    outtextxy(115, 8,"LOAI MB: ");
+    outtextxy(115,10,"So Cho: ");
+    outtextxy(115, 12,"So CDB: ");
+	char SHMB[MAX_LENGTH_SHMB+1] = "";
 	while(run){
 		ShowCur(true);
-		getch();
-		key = getch();
+		gotoxy(125+strlen(SHMB), 6);
+		nhapChuoi(SHMB, MAX_LENGTH_SHMB, key, NO_SPACE);
 		switch(key){
+			case ENTER:{
+				int vitri = timkiem_MB(list_MB, SHMB);
+				if(vitri==-1) Show_Message("ERROR","KHONG TIM THAY MAY BAY");
+				else{
+					outtextxy(125,6, list_MB.nodes[vitri]->sohieu_maybay);
+					outtextxy(125, 8,list_MB.nodes[vitri]->loai_maybay);
+					outtextxy(125, 10, intToString(list_MB.nodes[vitri]->socho));
+					outtextxy(125, 12, intToString(list_MB.nodes[vitri]->sochuyendabay));
+					XuLyMB(list_MB.nodes[vitri]);
+					show_List_MB(list_MB, page_now);
+				}
+				break;
+			}
 			case PAGEUP:{
 				if(page_now==1) continue;
 				show_List_MB(list_MB,--page_now);
@@ -1192,6 +1215,15 @@ void QuanLyMayBay(List_MayBay &list_MB){
 			case PAGEDOWN:{
 				if(page_now==count_page) continue;
 				show_List_MB(list_MB, ++page_now);
+				break;
+			}
+			case INSERT:{
+
+				break;
+			}
+			case ESC:{
+				key = 0;
+				run = 0;
 				break;
 			}
 		}
