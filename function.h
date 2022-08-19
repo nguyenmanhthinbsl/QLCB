@@ -27,7 +27,7 @@ void deleteListMB(List_MayBay &l);
 void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now);
 bool check_new_MACB(PTR_ChuyenBay First, char* maCB);
-Day_time charToDay(char* dt);
+Day_time charToDay(char* dt, int type);
 bool check_exist_SHMB(List_MayBay list, char* SHMB);
 bool check_SHMB_for_newCB(PTR_ChuyenBay First, List_MayBay listMB, char* SHMB);
 void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list);
@@ -35,6 +35,7 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list);
 
 //Quynh
+void ShowDS_CB_SBD_trong_Ngay(PTR_ChuyenBay First_Custom);
 void FilterList_CB(PTR_ChuyenBay First_CB);
 int kiemtra_SHMB_moi(List_MayBay list, char *SHMB);
 void XuLyMB(List_MayBay &list, int vitri);
@@ -137,7 +138,6 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     PTR_ChuyenBay p;
     while(run){
     	int y = wherey();
-		ShowCur(true);
     	switch(y){
     		case 6:{
     			nhapChuoi(maCB, MAX_LENGTH_MACB, key, NO_SPACE);
@@ -390,6 +390,7 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
 						p->data.danhsachVe[maghe] = CMND;
 					}
 					Show_Message("SUCCESS","MUA VE THANH CONG");
+					checkFull_CB(p);
 					show_List_CB(First_CB, page_now, count_CB,CHUABAY);
 				}else{
 					if(key==UP){
@@ -492,6 +493,7 @@ int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK){
     							break;
 							}else if(chon ==1){
 								p->data.danhsachVe[soghe]="0";
+								p->data.trangthai=CONVE;
 								Show_Message("SUCCESS","HUY VE THANH CONG");
 								show_List_CB(First_CB,page_now, count_CB,CHUABAY);
 								outtextxy(125, 14,"");
@@ -649,12 +651,12 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root){
 						strcpy(date, tocharDate(p->data.ngaykhoihanh));
 						while(run1){
 							gotoxy(125+strlen(date), 10);
-							input_date(date, key1);
+							input_date(date, key1, FULL_DATETIME);
 							if(key1==ENTER){
-								if(strlen(date)!=16||TGTL(charToDay(date))==false)
+								if(strlen(date)!=16||TGTL(charToDay(date, FULL_DATETIME))==false)
 									Show_Message("ERROR", "THOI GIAN KHONG HOP LE");
 								else{
-									p->data.ngaykhoihanh = charToDay(date);
+									p->data.ngaykhoihanh = charToDay(date, FULL_DATETIME);
 									Show_Message("SUCCESS","HIEU CHINH THANH CONG");
 									run = 0;
 									run1 = 0;
@@ -685,13 +687,17 @@ bool check_new_MACB(PTR_ChuyenBay First,char* maCB){
 	return true;
 }
 
-Day_time charToDay(char* dt){
+Day_time charToDay(char* dt, int type){
 	Day_time a;
 	a.ngay = (dt[0]-48)*10+(dt[1]-48);
 	a.thang = (dt[3]-48)*10+(dt[4]-48);
 	a.nam = (dt[6]-48)*1000+(dt[7]-48)*100+(dt[8]-48)*10+(dt[9]-48);
-	a.gio = (dt[11]-48)*10+(dt[12]-48);
-	a.phut = (dt[14]-48)*10+(dt[15]-48);
+	if(type==FULL_DATETIME){
+		a.gio = (dt[11]-48)*10+(dt[12]-48);
+		a.phut = (dt[14]-48)*10+(dt[15]-48);
+	}else{
+		a.gio = a.phut = 0;
+	}
 	return a;
 }
 
@@ -783,13 +789,13 @@ void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 				break;
 			}
 			case 10:{
-				input_date(date, key);
+				input_date(date, key, FULL_DATETIME);
 				if(key==ENTER||key==TAB||key==DOWN){
 					if(strlen(date)!=16){
 						Show_Message("ERROR","FORMAT THOI GIAN KHONG DUNG");
 						gotoxy(125+strlen(date), 10);
 					}else{
-						ret.ngaykhoihanh = charToDay(date);
+						ret.ngaykhoihanh = charToDay(date, FULL_DATETIME);
 						if(!TGTL(ret.ngaykhoihanh)){
 							Show_Message("ERROR","THOI GIAN KHONG HOP LE");
 							gotoxy(125+strlen(date), 10);
@@ -848,6 +854,27 @@ void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 	}
 }
 
+void ShowDS_CB_SBD_trong_Ngay(PTR_ChuyenBay First_Custom){
+	int count_CB = dem_CB(First_Custom,TATCA);
+	int count_page = (count_CB%10==0)?(count_CB/10):(count_CB/10+1);
+	int page_now = 1;
+	show_List_CB(First_Custom, page_now, count_CB, TATCA);
+	char input;
+	while(1){
+		input=getch();
+		if(input==is_press_arrow_key){
+			input=getch();
+			if(input==PAGEUP){
+				if(page_now==1) continue;
+				show_List_CB(First_Custom, --page_now, count_CB, TATCA);
+			}else if(input==PAGEDOWN){
+				if(page_now==count_page) continue;
+				show_List_CB(First_Custom, ++page_now, count_CB, TATCA);
+			}
+		}else if(input==ESC) break;
+	}
+}
+
 void FilterList_CB(PTR_ChuyenBay First_CB){
 	Clear_Frame_Input();
 	outtextxy(115, 6,"NGAY: ");
@@ -856,6 +883,54 @@ void FilterList_CB(PTR_ChuyenBay First_CB){
 	char date[11] = "";
 	char SBD[MAX_LENGTH_SBD+1]="";
 	PTR_ChuyenBay First_Custom = NULL;
+	gotoxy(125, 6);
+	Day_time begin, end;
+	int run =1 ;
+	PTR_ChuyenBay p;
+	while(run){
+		int y = wherey();
+		switch(y){
+			case 6:{
+				input_date(date, key, ONLY_DATE);
+				if(key==ESC)
+					run = 0;
+				else if(key==ENTER||key==TAB||key==DOWN){
+					if(strlen(date)!=10){
+						Show_Message("ERROR","FORMAT THOI GIAN KHONG HOP LE");
+						gotoxy(125+strlen(date), 6);
+					}else{
+						begin = charToDay(date, ONLY_DATE);
+						if(!kt(begin)){
+							Show_Message("ERROR","THOI GIAN KHONG HOP LE");
+							gotoxy(125+strlen(date), 6);
+						}else{
+							end = begin;
+							end.gio = 23;
+							end.phut = 59;
+							gotoxy(125+strlen(SBD), 8);
+						}
+					}
+				}
+				break;
+			}
+			case 8:{
+				nhapChuoi(SBD, MAX_LENGTH_SBD, key, ONLY_WORD);
+				if(key==ESC)
+					run = 0;
+				else if(key==ENTER){
+					for(p=First_CB;p!=NULL;p=p->next){
+						if(p->data.trangthai==CONVE&&strcmp(p->data.sanbayden, SBD)==0&&
+						(sosanhTG(p->data.ngaykhoihanh, begin)>=0&&sosanhTG(p->data.ngaykhoihanh, end)<=0))
+							Add_CB_to_List(First_Custom, p->data);
+					}
+					ShowDS_CB_SBD_trong_Ngay(First_Custom);
+					run = 0;
+				}else if(key==UP){
+					gotoxy(125+strlen(date), 6);
+				}
+			}
+		}
+	}
 	deleteListCB(First_Custom);
 }
 
@@ -901,8 +976,10 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
 			}
 			case Ctrl_F:{
 				//Quynh
+				Clear_Frame_Main();
 				FilterList_CB(First_CB);
 				Clear_Frame_Input();
+				
 				show_List_CB(First_CB,page_now, count_CB,TATCA);
 				outtextxy(115, 6,"MA CB: ");
 				outtextxy(125, 6,MaCB);
@@ -1173,8 +1250,9 @@ void XuLyMB(List_MayBay &list, int vitri){
 							Show_Message("ERROR","KHONG THE XOA MAY BAY");
 						}else{
 							//Hàm Xóa
-							xoa_mb_khoids(list, vitri);
-							Show_Message("SUCCESS","XOA MAY BAY THANH CONG");
+							if(!xoa_mb_khoids(list, vitri))
+								Show_Message("ERROR","XOA THAT BAI");
+							else Show_Message("SUCCESS","XOA MAY BAY THANH CONG");
 							run = 0;
 						}
 					}else if(chon==0){
@@ -1361,7 +1439,6 @@ void QuanLyMayBay(List_MayBay &list_MB){
     outtextxy(115, 12,"So CDB: ");
 	char SHMB[MAX_LENGTH_SHMB+1] = "";
 	while(run){
-		ShowCur(true);
 		gotoxy(125+strlen(SHMB), 6);
 		nhapChuoi(SHMB, MAX_LENGTH_SHMB, key, NO_SPACE);
 		switch(key){

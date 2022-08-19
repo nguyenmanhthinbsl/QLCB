@@ -22,7 +22,7 @@ void Trim(char* S);
 void Upper(char* S);
 string concat(string a, string b);
 char* tocharDate(Day_time &mytime);
-void input_date(char* date, char &key);
+void input_date(char* date, char &key, int type);
 
 /*Function Deployment*/
 
@@ -134,7 +134,7 @@ void nhapChuoi(char* str, int length, char &key, int type){
     key = ENTER;
 }
 
-void input_date(char* date, char &key){
+void input_date(char* date, char &key, int type){
 	ShowCur(true);
 	char input;
 	while(1){
@@ -158,16 +158,19 @@ void input_date(char* date, char &key){
 				date[strlen(date)-1]='\0';
 			}
 		}else if(input>='0'&&input<='9'){
-			if(strlen(date)==16) continue;
+			if((type==FULL_DATETIME&&strlen(date)==16)||(type==ONLY_DATE&&strlen(date)==10)) continue;
 			else if(strlen(date)==1||strlen(date)==4){
 				cout<<input<<"/";
 				date[strlen(date)]=input;
 				date[strlen(date)]='/';
-			}else if(strlen(date)==9){
+			}else if(strlen(date)==9&&type==FULL_DATETIME){
 				cout<<input<<" ";
 				date[strlen(date)]=input;
 				date[strlen(date)]=' ';
-			}else if(strlen(date)==12){
+			}else if(strlen(date)==9&&type==ONLY_DATE){
+                cout<<input;
+                date[strlen(date)]=input;
+            }else if(strlen(date)==12){
 				cout<<input<<":";
 				date[strlen(date)]=input;
 				date[strlen(date)]=':';

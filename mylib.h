@@ -29,6 +29,8 @@
 #define ONLY_WORD 2
 #define ALL_CHAR 3
 #define NO_SPACE 4
+#define ONLY_DATE 0
+#define FULL_DATETIME 1
 
 void gotoxy(short x, short y);
 int wherex(void);
