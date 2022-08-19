@@ -563,6 +563,9 @@ void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now){
 		return;
 	}
 	Clear_Frame_Main();
+	outtextxy(10, 8, concat("DANH SACH HANH KHACH THUOC CHUYEN BAY ",p->data.ma_chuyenbay));
+	outtextxy(10, 9, concat("NGAY GIO KHOI HANH: ",tocharDate(p->data.ngaykhoihanh)));
+	outtextxy(50,9, concat("NOI DEN: ", p->data.sanbayden));
 	outtextxy(2,11,"+--------+-----------+-------------------+------------------------------+--------------+------+");
 	outtextxy(2,12,"|  STT   |   SO VE   |      SO CMND      |            HO                |      TEN     | PHAI |");
 	int y=11;
