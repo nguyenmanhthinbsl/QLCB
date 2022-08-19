@@ -22,6 +22,8 @@ int DatVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK);
 int HuyVe(PTR_ChuyenBay &First_CB, PTR_HK root_HK);
 void Init_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void Handle_Main();
+void deleteListCB(PTR_ChuyenBay &First);
+void deleteListMB(List_MayBay &l);
 void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now);
 bool check_new_MACB(PTR_ChuyenBay First, char* maCB);
@@ -33,6 +35,7 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list);
 
 //Quynh
+void FilterList_CB(PTR_ChuyenBay First_CB);
 int kiemtra_SHMB_moi(List_MayBay list, char *SHMB);
 void XuLyMB(List_MayBay &list, int vitri);
 void Insert_MayBay(List_MayBay &list_MB);
@@ -72,28 +75,20 @@ void show_List_CB(PTR_ChuyenBay l, int page_now, int count_CB, string status){
 	Clear_Frame_Main();
 	outtextxy(2,11,"+------------------+---------------------+---------------------+-----------------------+--------------+");
 	outtextxy(2,12,"|  MA CHUYEN BAY   |   NGAY GIO BAY      |   SO HIEU MAY BAY   |   SAN BAY DEN         | SO GHE TRONG |");
-	if(page_now!=count_page)
-		for(int i=(page_now-1)*MAXLIST; i<(page_now)*MAXLIST;i++){
-			outtextxy(2,(13+i*2)-(page_now-1)*MAXLIST*2,"+------------------+---------------------+---------------------+-----------------------+--------------+");
-			outtextxy(2,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].ma_chuyenbay));
-			outtextxy(21, (14+i*2)-(page_now-1)*MAXLIST*2, concat("|", tocharDate(temp[i].ngaykhoihanh)));
-			outtextxy(43,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].sohieu_maybay));
-			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,concat("|",temp[i].sanbayden));
-			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<sovechuaban(temp[i]);
-			outtextxy(104, (14+i*2)-(page_now-1)*MAXLIST*2,"|");
+	int y=11;
+	for (int i = 0 ; i < count_CB; i++){
+		if (i < page_now * 10&& i>=(page_now-1)*10){
+			y+=2;
+			outtextxy(2, y, "+------------------+---------------------+---------------------+-----------------------+--------------+");
+			outtextxy(2, y+1, concat("|", temp[i].ma_chuyenbay));
+			outtextxy(21, y+1, concat("|", tocharDate(temp[i].ngaykhoihanh)));
+			outtextxy(43, y+1, concat("|", temp[i].sohieu_maybay));
+			outtextxy(65, y+1, concat("|", temp[i].sanbayden));
+			outtextxy(89, y+1, "|"+intToString(sovechuaban(temp[i])));
+			outtextxy(104, y+1, "|");
 		}
-	else
-		for(int i=(page_now-1)*MAXLIST;i<count_CB;i++){
-			outtextxy(2,(13+i*2)-(page_now-1)*MAXLIST*2,"+------------------+---------------------+---------------------+-----------------------+--------------+");
-			outtextxy(2,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].ma_chuyenbay));
-			outtextxy(21, (14+i*2)-(page_now-1)*MAXLIST*2, concat("|",tocharDate(temp[i].ngaykhoihanh)));
-			outtextxy(43,(14+i*2)-(page_now-1)*MAXLIST*2, concat("|",temp[i].sohieu_maybay));
-			outtextxy(65, (14+i*2)-(page_now-1)*MAXLIST*2,concat("|",temp[i].sanbayden));
-			gotoxy(89, (14+i*2)-(page_now-1)*MAXLIST*2);
-			cout<<"|"<<sovechuaban(temp[i]);
-			outtextxy(104, (14+i*2)-(page_now-1)*MAXLIST*2,"|");
-		}
+		if(i>=(page_now)*10) break;
+	}
 	outtextxy(2,wherey()+1,"+------------------+---------------------+---------------------+-----------------------+--------------+");
 	delete[] temp;
 }
@@ -568,14 +563,13 @@ void show_dsVe(PTR_ChuyenBay &p,PTR_HK root, int page_now){
 	Clear_Frame_Main();
 	outtextxy(2,11,"+--------+-----------+-------------------+------------------------------+--------------+------+");
 	outtextxy(2,12,"|  STT   |   SO VE   |      SO CMND      |            HO                |      TEN     | PHAI |");
-	int y;
+	int y=11;
 	for (int i = 1; i <= p->data.soVe; i++){
 		if (p->data.danhsachVe[i] != "0"){
 			++stt;
 			if (stt <= page_now * 10){
 				if (stt > (page_now - 1) * 10){
-					if(stt<page_now*10) y = 11 + (stt % 10) * 2;
-					else y = 11+10*2;
+					y+=2;
 					outtextxy(2, y,"+--------+-----------+-------------------+------------------------------+--------------+------+");
 					outtextxy(2, y+1,"|"+intToString(stt));
 					outtextxy(11, y+1,"|"+intToString(i));
@@ -854,6 +848,17 @@ void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 	}
 }
 
+void FilterList_CB(PTR_ChuyenBay First_CB){
+	Clear_Frame_Input();
+	outtextxy(115, 6,"NGAY: ");
+	outtextxy(115, 8,"SB DEN: ");
+	char key = 0;
+	char date[11] = "";
+	char SBD[MAX_LENGTH_SBD+1]="";
+	PTR_ChuyenBay First_Custom = NULL;
+	deleteListCB(First_Custom);
+}
+
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
 	Clear_Frame_Main();
     int page_now = 1;
@@ -892,6 +897,19 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
 					sort_CB(First_CB);
 					show_List_CB(First_CB,page_now, count_CB,TATCA);
 				}
+				break;
+			}
+			case Ctrl_F:{
+				//Quynh
+				FilterList_CB(First_CB);
+				Clear_Frame_Input();
+				show_List_CB(First_CB,page_now, count_CB,TATCA);
+				outtextxy(115, 6,"MA CB: ");
+				outtextxy(125, 6,MaCB);
+				outtextxy(115, 8,"SB DEN: ");
+				outtextxy(115,10,"Time: ");
+				outtextxy(115, 12,"SHMB: ");
+				outtextxy(115,14,"Status: ");
 				break;
 			}
 			case ESC:{
@@ -997,21 +1015,26 @@ void Deletedequi(PTR_HK &root_HK){
 	}
 }
 
-void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK){
-	Write_File(list_MB, First_CB, root_HK);
-    //Delete Memory List May Bay
-    for(int i=0;i<list_MB.soluong;i++){
-        if(list_MB.nodes[i]==NULL) break;
-        delete list_MB.nodes[i];
-    }
-    //Delete Memory List Chuyen Bay
-    while(First_CB!=NULL){
-        PTR_ChuyenBay temp = First_CB;
-        First_CB = First_CB->next;
+void deleteListCB(PTR_ChuyenBay &First){
+	while(First!=NULL){
+        PTR_ChuyenBay temp = First;
+        First = First->next;
         delete[] temp->data.danhsachVe;
         delete temp;
     }
-	//Delete Memory List Hanh Khach
+}
+
+void deleteListMB(List_MayBay &l){
+	for(int i=0;i<l.soluong;i++){
+        if(l.nodes[i]==NULL) break;
+        delete l.nodes[i];
+    }
+}
+
+void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK){
+	Write_File(list_MB, First_CB, root_HK);
+    deleteListMB(list_MB);
+    deleteListCB(First_CB);
     Deletedequi(root_HK);
     Clear_Frame_Main();
     Clear_Frame_Input();
@@ -1125,7 +1148,6 @@ int SelectLV2_2(){
     return key;
 }
 
-//Quynh
 void XuLyMB(List_MayBay &list, int vitri){
 	MayBay *temp = list.nodes[vitri];
 	char input;
@@ -1151,6 +1173,7 @@ void XuLyMB(List_MayBay &list, int vitri){
 							Show_Message("ERROR","KHONG THE XOA MAY BAY");
 						}else{
 							//Hàm Xóa
+							xoa_mb_khoids(list, vitri);
 							Show_Message("SUCCESS","XOA MAY BAY THANH CONG");
 							run = 0;
 						}

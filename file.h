@@ -32,7 +32,6 @@ void Read_File(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK){
 	
 	ifstream infile_MB, infile_CB, infile_HK;
 	char input[1000]="";
-	//Read MAY BAY - Done
 	infile_MB.open("file/maybay.txt");
 	while(1){
 		infile_MB.getline(input, 1000);
@@ -48,7 +47,6 @@ void Read_File(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK){
 	}
 	infile_MB.close();
 	
-	//Read CHUYEN BAY - Done
 	infile_CB.open("file/chuyenbay.txt");
 	while(1){
 		infile_CB.getline(input, 1000);
@@ -68,8 +66,6 @@ void Read_File(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK){
 		}
 	}
 	infile_CB.close();
-	
-	//Read HANH KHACH
 	infile_HK.open("file/hanhkhach.txt");
 	while(1){
 		infile_HK.getline(input, 1000);

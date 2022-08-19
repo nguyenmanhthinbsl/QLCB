@@ -96,7 +96,7 @@ void nhapChuoi(char* str, int length, char &key, int type){
     char input;
     int x,y;
     while((input = getch())!=ENTER){
-    	if(input==TAB||input==ESC){
+    	if(input==TAB||input==ESC||input==Ctrl_F){
     		key=input;
     		return;
 		}

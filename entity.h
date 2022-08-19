@@ -222,3 +222,14 @@ void sort_CB(PTR_ChuyenBay First){ //Selection
         i->data = temp;
     }
 }
+
+//QUYNH
+int xoa_mb_khoids(List_MayBay &list_MB , int vitri){
+	if(vitri<0 || vitri>=list_MB.soluong || list_MB.soluong==0) 
+		return 0;
+	delete list_MB.nodes[vitri];
+	for(int i=vitri+1; i< list_MB.soluong; i++ )
+		list_MB.nodes[i-1]= list_MB.nodes[i];
+	list_MB.soluong--;
+	return 1;
+}
