@@ -8,9 +8,12 @@
 
 using namespace std;
 
+//Menu
 int SelectLV1();
 int SelectLV2_1();
 int SelectLV2_2();
+
+//Y
 int Insert_MB(List_MayBay &list, MayBay *maybay);
 void show_List_MB(List_MayBay list, int page_now);
 void Deletedequi(PTR_HK &root_HK);
@@ -27,7 +30,7 @@ void deleteListMB(List_MayBay &l);
 void After_Main(List_MayBay &list_MB, PTR_ChuyenBay &First_CB, PTR_HK &root_HK);
 void show_dsVe(PTR_ChuyenBay &p, PTR_HK root, int page_now);
 bool check_new_MACB(PTR_ChuyenBay First, char *maCB);
-Day_time charToDay(char *dt, int type);
+
 bool check_exist_SHMB(List_MayBay list, char *SHMB);
 bool check_SHMB_for_newCB(PTR_ChuyenBay First, List_MayBay listMB, char *SHMB);
 void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list);
@@ -35,18 +38,16 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list);
 
 // Quynh
-void ShowDS_CB_SBD_trong_Ngay(PTR_ChuyenBay First_Custom);
 void FilterList_CB(PTR_ChuyenBay First_CB);
 int kiemtra_SHMB_moi(List_MayBay list, char *SHMB);
 void XuLyMB(List_MayBay &list, int vitri);
 void Insert_MayBay(List_MayBay &list_MB);
 void QuanLyMayBay(List_MayBay &list_MB);
 
-//---
+//THIN
 void DanhSachGheTrong(PTR_ChuyenBay &First_CB, List_MayBay &list_MB);
 void DanhSachGheTrongTheoChuyenBay(ChuyenBay p);
 void SapXepDanhSachMayBayQuickSort(List_MayBay &list_MB, int vitri_dstk[], int q, int r);
-void SapXepDanhSachMayBayBubbleSort(List_MayBay &list_MB, int *vitri_dstk);
 void ThongKeTheoTrang(int current_page, int total_page, List_MayBay &list_MB, int *vitri_dstk);
 void ThongKeChuyenBay(List_MayBay &list_MB);
 
@@ -879,24 +880,6 @@ bool check_new_MACB(PTR_ChuyenBay First, char *maCB)
 		if (strcmp(p->data.ma_chuyenbay, maCB) == 0)
 			return false;
 	return true;
-}
-
-Day_time charToDay(char *dt, int type)
-{
-	Day_time a;
-	a.ngay = (dt[0] - 48) * 10 + (dt[1] - 48);
-	a.thang = (dt[3] - 48) * 10 + (dt[4] - 48);
-	a.nam = (dt[6] - 48) * 1000 + (dt[7] - 48) * 100 + (dt[8] - 48) * 10 + (dt[9] - 48);
-	if (type == FULL_DATETIME)
-	{
-		a.gio = (dt[11] - 48) * 10 + (dt[12] - 48);
-		a.phut = (dt[14] - 48) * 10 + (dt[15] - 48);
-	}
-	else
-	{
-		a.gio = a.phut = 0;
-	}
-	return a;
 }
 
 bool check_exist_SHMB(List_MayBay list, char *SHMB)

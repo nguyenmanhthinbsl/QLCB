@@ -24,7 +24,26 @@ string concat(string a, string b);
 char *tocharDate(Day_time &mytime);
 void input_date(char *date, char &key, int type);
 void swapInt(int &a, int &b);
-/*Function Deployment*/
+Day_time charToDay(char *dt, int type);
+
+Day_time charToDay(char *dt, int type)
+{
+	Day_time a;
+	a.ngay = (dt[0] - 48) * 10 + (dt[1] - 48);
+	a.thang = (dt[3] - 48) * 10 + (dt[4] - 48);
+	a.nam = (dt[6] - 48) * 1000 + (dt[7] - 48) * 100 + (dt[8] - 48) * 10 + (dt[9] - 48);
+	if (type == FULL_DATETIME)
+	{
+		a.gio = (dt[11] - 48) * 10 + (dt[12] - 48);
+		a.phut = (dt[14] - 48) * 10 + (dt[15] - 48);
+	}
+	else
+	{
+		a.gio = a.phut = 0;
+	}
+	return a;
+}
+
 void swapInt(int &a, int &b)
 {
 	int temp;
