@@ -9,7 +9,7 @@ int main()
     PTR_HK root_HK = NULL;
 
     Init_Main(list_MB, First_CB, root_HK);
-    
+
     check_HoanTat_All(First_CB, list_MB);
 
     int key_1;
@@ -23,7 +23,7 @@ int main()
         {
         case -1:
         {
-        	After_Main(list_MB, First_CB, root_HK);
+            After_Main(list_MB, First_CB, root_HK);
             return 0;
         }
         case 0:
@@ -46,7 +46,7 @@ int main()
                 }
                 case 1:
                 {
-                    //Chua Co Chuc Nang
+                    // Chua Co Chuc Nang
                     break;
                 }
                 }
@@ -76,15 +76,19 @@ int main()
                 }
                 case 2:
                 {
-                   HuyVe(First_CB, root_HK);
+                    HuyVe(First_CB, root_HK);
                     break;
                 }
-                case 3:{ //THIN ML
-					break;
-				}
-				case 4:{ //THIN ML
-					break;
-				}
+                case 3:
+                {
+                    DanhSachGheTrong(First_CB, list_MB);
+                    break;
+                }
+                case 4:
+                {
+                    ThongKeChuyenBay(list_MB);
+                    break;
+                }
                 }
             }
         }
@@ -92,4 +96,3 @@ int main()
         }
     }
 }
-

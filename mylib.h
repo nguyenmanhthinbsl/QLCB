@@ -38,20 +38,22 @@ int wherey(void);
 void SetColor(WORD color);
 void SetBGColor(WORD color);
 void ShowCur(bool CursorVisibility);
-void resizeConsole(int width, int height);  //pixel
+void resizeConsole(int width, int height); // pixel
 void DisableResizeWindow();
 void DisableCtrButton(bool Close, bool Min, bool Max);
 void Remove_Scrollbars();
 
 /*Function Deployment*/
-void gotoxy(short x, short y) {
+void gotoxy(short x, short y)
+{
     HANDLE hConsoleOutput;
-    COORD Cursor_an_Pos = { x,y };
+    COORD Cursor_an_Pos = {x, y};
     hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleCursorPosition(hConsoleOutput, Cursor_an_Pos);
 }
 
-int wherex(void) {
+int wherex(void)
+{
     HANDLE hConsoleOutput;
     hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
@@ -59,7 +61,8 @@ int wherex(void) {
     return screen_buffer_info.dwCursorPosition.X;
 }
 
-int wherey(void) {
+int wherey(void)
+{
     HANDLE hConsoleOutput;
     hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
@@ -67,7 +70,8 @@ int wherey(void) {
     return screen_buffer_info.dwCursorPosition.Y;
 }
 
-void SetColor(WORD color) {
+void SetColor(WORD color)
+{
     HANDLE hConsoleOutput;
     hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
@@ -79,7 +83,8 @@ void SetColor(WORD color) {
     SetConsoleTextAttribute(hConsoleOutput, wAttributes);
 }
 
-void SetBGColor(WORD color) {
+void SetBGColor(WORD color)
+{
     HANDLE hConsoleOutput;
     hConsoleOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO screen_buffer_info;
@@ -92,7 +97,8 @@ void SetBGColor(WORD color) {
     SetConsoleTextAttribute(hConsoleOutput, wAttributes);
 }
 
-void ShowCur(bool CursorVisibility) {
+void ShowCur(bool CursorVisibility)
+{
     HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO ConCurInf;
     ConCurInf.dwSize = 10;
@@ -100,19 +106,22 @@ void ShowCur(bool CursorVisibility) {
     SetConsoleCursorInfo(handle, &ConCurInf);
 }
 
-void resizeConsole(int width, int height) {
+void resizeConsole(int width, int height)
+{
     HWND console = GetConsoleWindow();
-    SetWindowPos( console, 0, 55, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER );
+    SetWindowPos(console, 0, 55, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
     RECT r;
     GetWindowRect(console, &r);
     MoveWindow(console, r.left, r.top, width, height, TRUE);
 }
-void DisableResizeWindow() {
+void DisableResizeWindow()
+{
     HWND hWnd = GetConsoleWindow();
     SetWindowLong(hWnd, GWL_STYLE, GetWindowLong(hWnd, GWL_STYLE) & ~WS_SIZEBOX);
 }
 
-void DisableCtrButton(bool Close, bool Min, bool Max) {
+void DisableCtrButton(bool Close, bool Min, bool Max)
+{
     HWND hWnd = GetConsoleWindow();
     HMENU hMenu = GetSystemMenu(hWnd, false);
     if (Close == 1)
@@ -123,7 +132,8 @@ void DisableCtrButton(bool Close, bool Min, bool Max) {
         DeleteMenu(hMenu, SC_MAXIMIZE, MF_BYCOMMAND);
 }
 
-void Remove_Scrollbars() {
+void Remove_Scrollbars()
+{
     // get handle to the console window
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     // retrieve screen buffer info
