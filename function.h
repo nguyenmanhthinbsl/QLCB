@@ -34,7 +34,9 @@ void XuLyCB(PTR_ChuyenBay &p, PTR_HK root);
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list);
 
 //Quynh
+int kiemtra_SHMB_moi(List_MayBay list, char *SHMB);
 void XuLyMB(MayBay *p);
+void Insert_MayBay(List_MayBay &list_MB);
 void QuanLyMayBay(List_MayBay &list_MB);
 
 
@@ -807,10 +809,12 @@ void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 				}else if(key==PAGEUP){
 					if(page_now==1) continue;
 					show_List_CB(First,--page_now, count_CB,TATCA);
+					gotoxy(125+strlen(ma_chuyenbay), 6);
 					break;
 				}else if(key==PAGEDOWN){
 					if(page_now==count_page) continue;
 					show_List_CB(First,++page_now, count_CB,TATCA);
+					gotoxy(125+strlen(ma_chuyenbay), 6);
 					break;
 				}
 				break;
@@ -831,10 +835,12 @@ void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 				}else if(key==PAGEUP){
 					if(page_now==1) continue;
 					show_List_CB(First,--page_now, count_CB,TATCA);
+					gotoxy(125+strlen(sanbayden), 8);
 					break;
 				}else if(key==PAGEDOWN){
 					if(page_now==count_page) continue;
 					show_List_CB(First,++page_now, count_CB,TATCA);
+					gotoxy(125+strlen(sanbayden), 8);
 					break;
 				}
 				break;
@@ -860,10 +866,12 @@ void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 				}else if(key==PAGEUP){
 					if(page_now==1) continue;
 					show_List_CB(First,--page_now, count_CB,TATCA);
+					gotoxy(125+strlen(date), 10);
 					break;
 				}else if(key==PAGEDOWN){
 					if(page_now==count_page) continue;
 					show_List_CB(First,++page_now, count_CB,TATCA);
+					gotoxy(125+strlen(date), 10);
 					break;
 				}
 				break;
@@ -889,10 +897,12 @@ void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 				}else if(key==PAGEUP){
 					if(page_now==1) continue;
 					show_List_CB(First,--page_now, count_CB,TATCA);
+					gotoxy(125+strlen(SHMB), 12);
 					break;
 				}else if(key==PAGEDOWN){
 					if(page_now==count_page) continue;
 					show_List_CB(First,++page_now, count_CB,TATCA);
+					gotoxy(125+strlen(SHMB), 12);
 					break;
 				}
 				break;
@@ -1177,6 +1187,129 @@ void XuLyMB(MayBay *p){
 
 }
 
+int kiemtra_SHMB_moi(List_MayBay list, char *SHMB){
+	LTrim(SHMB); RTrim(SHMB);
+	if(strlen(SHMB)==0) return -1;
+	for(int i=0;i<list.soluong;i++)
+		if(strcmp(list.nodes[i]->sohieu_maybay, SHMB)==0) return 0;
+	return 1;
+}
+
+void Insert_MayBay(List_MayBay &list_MB){
+	int page_now = 1;
+    int count_page = (list_MB.soluong%10==0)? (list_MB.soluong/10) : (list_MB.soluong/10+1);
+	show_List_MB(list_MB,page_now);
+	MayBay temp;
+	char SHMB[MAX_LENGTH_SHMB+1] = "";
+	char LoaiMB[MAX_LENGTH_LOAIMB+1]="";
+	char socho[6]="";
+	outtextxy(125, 6, SHMB);
+	outtextxy(125, 8, LoaiMB);
+	outtextxy(125, 10, socho);
+	outtextxy(125, 12, "0");
+	gotoxy(125+strlen(SHMB), 6);
+	int run = 1;
+	char key = 0;
+	while(run){
+		int y = wherey();
+    	ShowCur(true);
+		switch(y){
+			case 6:{
+				nhapChuoi(SHMB, MAX_LENGTH_SHMB, key, NO_SPACE);
+				if(key == ENTER||key==TAB||key==DOWN){
+					if(kiemtra_SHMB_moi(list_MB,SHMB)==-1){
+						Show_Message("ERROR","MA CB KHONG HOP LE");
+						gotoxy(125+strlen(SHMB), 6);
+						key = 0;
+					}else if(kiemtra_SHMB_moi(list_MB, SHMB)==0){
+						Show_Message("ERROR","MA CB DA TON TAI");
+						gotoxy(125+strlen(SHMB), 6);
+						key = 0;
+					}else gotoxy(125+strlen(LoaiMB), 8);
+				}else if(key == ESC){
+					run = key = 0;
+				}else if(key==PAGEUP){
+					if(page_now==1) continue;
+					show_List_MB(list_MB,--page_now);
+					gotoxy(125+strlen(SHMB), 6);
+					break;
+				}else if(key==PAGEDOWN){
+					if(page_now==count_page) continue;
+					show_List_MB(list_MB,++page_now);
+					gotoxy(125+strlen(SHMB), 6);
+					break;
+				}
+				break;
+			}
+			case 8:{
+				nhapChuoi(LoaiMB, MAX_LENGTH_LOAIMB, key, ONLY_WORD);
+				if(key==ENTER||key==TAB||key==DOWN){
+					LTrim(LoaiMB); RTrim(LoaiMB);
+					if(strlen(LoaiMB)==0){
+						Show_Message("ERROR","LOAI MAY BAY KHONG HOP LE");
+						gotoxy(125+strlen(LoaiMB), 8);
+					}else gotoxy(125+strlen(socho), 10);
+					key = 0;
+				}else if(key==ESC) run=key=0;
+				else if(key==UP){
+					gotoxy(125+strlen(SHMB), 6);
+					key = 0;
+				}else if(key==PAGEUP){
+					if(page_now==1) continue;
+					show_List_MB(list_MB,--page_now);
+					gotoxy(125+strlen(LoaiMB), 8);
+					break;
+				}else if(key==PAGEDOWN){
+					if(page_now==count_page) continue;
+					show_List_MB(list_MB,++page_now);
+					gotoxy(125+strlen(LoaiMB), 8);
+					break;
+				}
+				break;
+			}
+			case 10:{
+				nhapChuoi(socho, 5, key, ONLY_NUMBER);
+				if(key==ENTER){
+					int socho_int = toInt(socho);
+					if(socho_int<=0){
+						Show_Message("ERROR","SO CHO KHONG HOP LE");
+						gotoxy(125+strlen(socho), 10);
+					}else{
+						strcpy(temp.sohieu_maybay, SHMB);
+						strcpy(temp.loai_maybay, LoaiMB);
+						temp.socho = socho_int;
+						temp.sochuyendabay = 0;
+						int k = Add_MB_to_List(list_MB, temp);
+						if(k==0){
+							Show_Message("ERROR","DANH SACH DAY");
+							gotoxy(125+strlen(socho), 10);
+						}else{
+							Show_Message("SUCCESS","THEM MAY BAY THANH CONG");
+							run = 0;
+						}
+					}
+					key = 0;
+				}else if(key==ESC) run=key=0;
+				else if(key==UP){
+					gotoxy(125+strlen(LoaiMB), 8);
+					key = 0;
+				}else if(key==PAGEUP){
+					if(page_now==1) continue;
+					show_List_MB(list_MB,--page_now);
+					gotoxy(125+strlen(socho), 10);
+					break;
+				}else if(key==PAGEDOWN){
+					if(page_now==count_page) continue;
+					show_List_MB(list_MB,++page_now);
+					gotoxy(125+strlen(socho), 10);
+					break;
+				}
+				break;
+			}
+		}
+	}
+}
+
 void QuanLyMayBay(List_MayBay &list_MB){
 	Clear_Frame_Main();
     int page_now = 1;
@@ -1218,7 +1351,14 @@ void QuanLyMayBay(List_MayBay &list_MB){
 				break;
 			}
 			case INSERT:{
-
+				Insert_MayBay(list_MB);
+				page_now = 1;
+    			count_page = (list_MB.soluong%10==0)? (list_MB.soluong/10) : (list_MB.soluong/10+1);
+				show_List_MB(list_MB, page_now);
+				outtextxy(125, 6,SHMB);
+				outtextxy(125, 8,"");
+				outtextxy(125, 10,"");
+				outtextxy(125,12, "");
 				break;
 			}
 			case ESC:{

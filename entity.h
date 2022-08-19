@@ -138,10 +138,11 @@ bool listMBFull(List_MayBay list){
     return list.soluong>=MAXLIST_MAYBAY;
 }
 
-void Add_MB_to_List(List_MayBay &list,MayBay mb){
-    if(listMBFull(list)) return;
+int Add_MB_to_List(List_MayBay &list,MayBay mb){
+    if(listMBFull(list)) return 0;
     list.nodes[list.soluong] = Init_MB(mb);
     list.soluong++;
+    return 1;
 }
 
 int checkFull_CB(PTR_ChuyenBay First){
