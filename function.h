@@ -920,8 +920,10 @@ void FilterList_CB(PTR_ChuyenBay First_CB){
 				else if(key==ENTER){
 					for(p=First_CB;p!=NULL;p=p->next){
 						if(p->data.trangthai==CONVE&&strcmp(p->data.sanbayden, SBD)==0&&
-						(sosanhTG(p->data.ngaykhoihanh, begin)>=0&&sosanhTG(p->data.ngaykhoihanh, end)<=0))
-							Add_CB_to_List(First_Custom, p->data);
+						(sosanhTG(p->data.ngaykhoihanh, begin)>=0&&sosanhTG(p->data.ngaykhoihanh, end)<=0)){
+							ChuyenBay temp = p->data;
+							Add_CB_to_List(First_Custom, temp);
+						}	
 					}
 					ShowDS_CB_SBD_trong_Ngay(First_Custom);
 					run = 0;
@@ -931,7 +933,7 @@ void FilterList_CB(PTR_ChuyenBay First_CB){
 			}
 		}
 	}
-	deleteListCB(First_Custom);
+	// deleteListCB(First_Custom);
 }
 
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
@@ -974,12 +976,11 @@ void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
 				}
 				break;
 			}
+			//quynh
 			case Ctrl_F:{
-				//Quynh
 				Clear_Frame_Main();
 				FilterList_CB(First_CB);
 				Clear_Frame_Input();
-				
 				show_List_CB(First_CB,page_now, count_CB,TATCA);
 				outtextxy(115, 6,"MA CB: ");
 				outtextxy(125, 6,MaCB);

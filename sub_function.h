@@ -116,14 +116,10 @@ void nhapChuoi(char* str, int length, char &key, int type){
             }
         }else{
             if(strlen(str)==length) continue;
-            if(type==ONLY_NUMBER)
-            	if(input<'0'||input>'9') continue;
-			else if(type==ONLY_WORD)
-				if((input<'A'||input>'Z')&&(input<'a'||input>'z')&&input!=' ') continue;
-			else if(type==NO_SPACE)
-				if(input==' ') continue;
-			if(input==' ')
-				if(str[strlen(str)-1]==' ') continue;
+            if(type==ONLY_NUMBER && (input<'0'||input>'9')) continue;
+			if(type==ONLY_WORD&&((input<'A'||input>'Z')&&(input<'a'||input>'z')&&input!=' ')) continue;
+			if(type==NO_SPACE&&input==' ') continue;
+			if(input==' '&&str[strlen(str)-1]==' ') continue;
 			if(input>='a'&&input<='z')
                 input = input - 32;
             cout<<input;
