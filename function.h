@@ -857,27 +857,6 @@ void NhapChuyenBay(PTR_ChuyenBay First, List_MayBay list){
 	}
 }
 
-void ShowDS_CB_SBD_trong_Ngay(PTR_ChuyenBay First_Custom){
-	int count_CB = dem_CB(First_Custom,TATCA);
-	int count_page = (count_CB%10==0)?(count_CB/10):(count_CB/10+1);
-	int page_now = 1;
-	show_List_CB(First_Custom, page_now, count_CB, TATCA);
-	char input;
-	while(1){
-		input=getch();
-		if(input==is_press_arrow_key){
-			input=getch();
-			if(input==PAGEUP){
-				if(page_now==1) continue;
-				show_List_CB(First_Custom, --page_now, count_CB, TATCA);
-			}else if(input==PAGEDOWN){
-				if(page_now==count_page) continue;
-				show_List_CB(First_Custom, ++page_now, count_CB, TATCA);
-			}
-		}else if(input==ESC) break;
-	}
-}
-
 void FilterList_CB(PTR_ChuyenBay First_CB){
 	Clear_Frame_Input();
 	outtextxy(115, 6,"NGAY: ");
@@ -885,7 +864,6 @@ void FilterList_CB(PTR_ChuyenBay First_CB){
 	char key = 0;
 	char date[11] = "";
 	char SBD[MAX_LENGTH_SBD+1]="";
-	PTR_ChuyenBay First_Custom = NULL;
 	gotoxy(125, 6);
 	Day_time begin, end;
 	int run =1 ;
@@ -921,14 +899,53 @@ void FilterList_CB(PTR_ChuyenBay First_CB){
 				if(key==ESC)
 					run = 0;
 				else if(key==ENTER){
+					int soluong = 0;
+					ChuyenBay temp[dem_CB(First_CB,CHUABAY)];
 					for(p=First_CB;p!=NULL;p=p->next){
 						if(p->data.trangthai==CONVE&&strcmp(p->data.sanbayden, SBD)==0&&
 						(sosanhTG(p->data.ngaykhoihanh, begin)>=0&&sosanhTG(p->data.ngaykhoihanh, end)<=0)){
-							ChuyenBay temp = p->data;
-							Add_CB_to_List(First_Custom, temp);
+							temp[soluong++] = p->data;
 						}	
 					}
-					ShowDS_CB_SBD_trong_Ngay(First_Custom);
+					int count_page = (soluong%10==0)?(soluong/10):(soluong/10+1);
+					int page_now = 1;
+					char input;
+					do{
+						Clear_Frame_Main();
+						if(soluong==0){
+							outtextxy(30,11,"KHONG CO CHUYEN BAY NAO CHUA HOAN THANH");
+							ShowCur(false);
+						}else{
+							outtextxy(2,11,"+------------------+---------------------+---------------------+-----------------------+--------------+");
+							outtextxy(2,12,"|  MA CHUYEN BAY   |   NGAY GIO BAY      |   SO HIEU MAY BAY   |   SAN BAY DEN         | SO GHE TRONG |");
+							int y=11;
+							for (int i = 0 ; i < soluong; i++){
+								if (i < page_now * 10&& i>=(page_now-1)*10){
+									y+=2;
+									outtextxy(2, y, "+------------------+---------------------+---------------------+-----------------------+--------------+");
+									outtextxy(2, y+1, concat("|", temp[i].ma_chuyenbay));
+									outtextxy(21, y+1, concat("|", tocharDate(temp[i].ngaykhoihanh)));
+									outtextxy(43, y+1, concat("|", temp[i].sohieu_maybay));
+									outtextxy(65, y+1, concat("|", temp[i].sanbayden));
+									outtextxy(89, y+1, "|"+intToString(sovechuaban(temp[i])));
+									outtextxy(104, y+1, "|");
+								}
+								if(i>=(page_now)*10) break;
+							}
+							outtextxy(2,wherey()+1,"+------------------+---------------------+---------------------+-----------------------+--------------+");
+						}
+						input=getch();
+						if(input==is_press_arrow_key){
+							input=getch();
+							if(input==PAGEUP){
+								if(page_now==1) continue;
+								--page_now;
+							}else if(input==PAGEDOWN){
+								if(page_now==count_page) continue;
+								++page_now;
+							}
+						}else if(input==ESC) break;
+					}while(1);
 					run = 0;
 				}else if(key==UP){
 					gotoxy(125+strlen(date), 6);
@@ -936,7 +953,6 @@ void FilterList_CB(PTR_ChuyenBay First_CB){
 			}
 		}
 	}
-	// deleteListCB(First_Custom);
 }
 
 void XuLyDSChuyenBay(PTR_ChuyenBay &First_CB, PTR_HK root, List_MayBay list){
