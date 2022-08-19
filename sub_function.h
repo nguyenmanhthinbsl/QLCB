@@ -22,6 +22,7 @@ void Trim(char* S);
 void Upper(char* S);
 string concat(string a, string b);
 char* tocharDate(Day_time &mytime);
+void input_date(char* date, char &key);
 
 /*Function Deployment*/
 
@@ -91,6 +92,7 @@ string intToString(int i){
 }
 
 void nhapChuoi(char* str, int length, char &key, int type){
+    ShowCur(true);
     char input;
     int x,y;
     while((input = getch())!=ENTER){
@@ -130,6 +132,63 @@ void nhapChuoi(char* str, int length, char &key, int type){
         }
     }
     key = ENTER;
+}
+
+void input_date(char* date, char &key){
+	ShowCur(true);
+	char input;
+	while(1){
+		input=getch();
+		if(input==ESC||input==ENTER||input==TAB){
+			key = input;
+			return;
+		}else if(input==is_press_arrow_key||input==is_press_f){
+			key = getch();
+			return;
+		}else if(input==BACKSPACE){
+			if(strlen(date)==0) continue;
+			else if(strlen(date)==15||strlen(date)==12||strlen(date)==7||strlen(date)==4){
+				outtextxy(wherex()-2, wherey(),"  ");
+				gotoxy(wherex()-2, wherey());
+				date[strlen(date)-1]='\0';
+				date[strlen(date)-1]='\0';
+			}else{
+				outtextxy(wherex()-1, wherey(), " ");
+				gotoxy(wherex()-1, wherey());
+				date[strlen(date)-1]='\0';
+			}
+		}else if(input>='0'&&input<='9'){
+			if(strlen(date)==16) continue;
+			else if(strlen(date)==1||strlen(date)==4){
+				cout<<input<<"/";
+				date[strlen(date)]=input;
+				date[strlen(date)]='/';
+			}else if(strlen(date)==9){
+				cout<<input<<" ";
+				date[strlen(date)]=input;
+				date[strlen(date)]=' ';
+			}else if(strlen(date)==12){
+				cout<<input<<":";
+				date[strlen(date)]=input;
+				date[strlen(date)]=':';
+			}else if(strlen(date)==2||strlen(date)==5){
+				cout<<"/"<<input;
+				date[strlen(date)]='/';
+				date[strlen(date)]=input;
+			}else if(strlen(date)==10){
+				cout<<" "<<input;
+				date[strlen(date)]=' ';
+				date[strlen(date)] = input;
+			}else if(strlen(date)==13){
+				cout<<":"<<input;
+				date[strlen(date)]=':';
+				date[strlen(date)]=input;
+			}else{
+				cout<<input;
+				date[strlen(date)]=input;
+			}
+		}
+	}
 }
 
 void LTrim(char* S){
