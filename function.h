@@ -1925,6 +1925,13 @@ void DanhSachGheTrong(PTR_ChuyenBay &First_CB, List_MayBay &list_MB)
 	Clear_Frame_Main();
 	int currentPage = 1;
 	int count_CB = dem_CB(First_CB, TATCA);
+	if(count_CB==0){
+		outtextxy(25, 7, "+--------------------------------------------------------------+");
+		outtextxy(25, 8, "|                   DANH SACH CHUYEN BAY TRONG !               |");
+		outtextxy(25, 9, "+--------------------------------------------------------------+");
+		getch();
+		return;
+	}
 	int totalPage = (count_CB % 10 == 0) ? (count_CB / 10) : (count_CB / 10 + 1);
 	show_List_CB(First_CB, currentPage, count_CB, TATCA);
 	outtextxy(115,6,"Nhap Ma Chuyen Bay:");
@@ -2120,6 +2127,7 @@ void ThongKeChuyenBay(List_MayBay &list_MB)
 		case ESC:
 		{
 			run = 0;
+			continue;
 		}
 		}
 	}
@@ -2199,8 +2207,7 @@ void SapXepDanhSachMayBayQuickSort(List_MayBay &list_MB, int vitri_dstk[], int q
 			i++;
 			j--;
 		}
-
-	} while (i <= j);
+	} while (i < j);
 
 	if (q < j)
 		SapXepDanhSachMayBayQuickSort(list_MB, vitri_dstk, q, j);
