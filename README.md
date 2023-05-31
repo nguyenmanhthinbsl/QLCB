@@ -1,8 +1,11 @@
-* QLCB *
-Quản lý các chuyến bay nội địa thuộc 1 hăng hàng không: Ta tổ chức các danh sách sau: 
-- Máy bay : mảng con trỏ có tối đa 300 máy bay. Mỗi máy bay có các thông tin (Số hiệu MB (C15), loại máy bay (C40), số chỗ) ;  Mỗi máy bay có 1 số hiệu duy nhất; số chỗ >=20
-- Chuyến bay : danh sách liên kết đơn ( Mã CB (C15),  Ngày giờ khởi hành, sân bay đến , trạng thái, Số hiệu MB, danh sách vé). Mỗi chuyến bay có 1 mã duy nhất; trạng thái chuyến bay bao gồm: 0: hủy chuyến, 1: còn vé, 2: hết vé,3: hoàn tất ; danh sách vé cho biết thông tin vé trên chuyến bay, và số CMND của hành khách đã đặt vé đó. Mỗi vé có  số vé  là số thứ tự trên chuyến từ số 1 đến số chỗ .
-- Hành khách: cây nhị phân tìm kiếm (Số CMND , Ho, Ten,  Phai)
+#QLCB
+> Quản lý các chuyến bay nội địa thuộc 1 hăng hàng không: Ta tổ chức các danh sách sau: 
+> - Máy bay : mảng con trỏ có tối đa 300 máy bay. Mỗi máy bay có các thông tin (Số hiệu MB (C15), loại máy bay (C40), số chỗ) ;  Mỗi máy bay có 1 số hiệu duy nhất; 
+> số chỗ >=20
+> - Chuyến bay : danh sách liên kết đơn ( Mã CB (C15),  Ngày giờ khởi hành, sân bay đến , trạng thái, Số hiệu MB, danh sách vé). Mỗi chuyến bay có 1 mã duy nhất;
+> trạng thái chuyến bay bao gồm: 0: hủy chuyến, 1: còn vé, 2: hết vé,3: hoàn tất ; danh sách vé cho biết thông tin vé trên chuyến bay, và số CMND của hành khách đã 
+> đặt vé đó. Mỗi vé có  số vé  là số thứ tự trên chuyến từ số 1 đến số chỗ .
+> - Hành khách: cây nhị phân tìm kiếm (Số CMND , Ho, Ten,  Phai)
 
 Chương trình có các chức năng sau: 
 
